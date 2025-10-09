@@ -119,7 +119,6 @@ RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # * Add scripts
 COPY ./installation_scripts /installation_scripts
-COPY ./examples /examples
 ENTRYPOINT [ "/bin/bash", "-c", "/installation_scripts/entrypoint.sh" ]
 
 ENV USER ubuntu
