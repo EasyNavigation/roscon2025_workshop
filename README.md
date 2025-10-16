@@ -158,3 +158,6 @@ docker pull your-custom-image:tag
 2. Modify the `run_docker.sh` script to use your custom image name.
 3. Follow the same steps as above to run the container.
 4. Any custom scripts can be downloaded directly in the browser environment and executed in the terminal.
+
+
+Para ejemplos de Nav2 y ejercicios del workshop, ver: [nav2_playground](../easynav_playground_kobuki/README.md)
