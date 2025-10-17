@@ -161,4 +161,4 @@ docker pull your-custom-image:tag
 
 
 For the first part of the workshop please visit:
-[nav2_playground](../easynav_playground_kobuki/README.md)
+[nav2_playground](nav2_playground/README.md)
