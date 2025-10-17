@@ -3,28 +3,45 @@
 # File: easynavigation_setup.sh
 # Description: Automated installation script for EasyNavigation robotics stack in ROS 2 Jazzy.
 #              This script sets up a complete development environment with all necessary dependencies.
-# Author: Jose Miguel Guerrero (josemiguel.guerrero@urjc.es)
+# Authors:
+#   - Jose Miguel Guerrero (josemiguel.guerrero@urjc.es)
+#   - Francisco Miguel Moreno (franciscom.moreno@urjc.es)
 # Date: 08/10/25
 # Institution: Universidad Rey Juan Carlos
 
 # Set the ROS 2 workspace directory where EasyNavigation will be installed
-export pkg_dir=~/ros2_ws
+export ws_dir=~/easynav_ws
 
 # Update system packages to ensure we have the latest versions and security patches
 echo "Updating system packages..."
 sudo apt update
 sudo apt full-upgrade -y
 
-# Clone the EasyNavigation repositories (Jazzy branch for ROS 2 Jazzy compatibility)
-echo "Cloning EasyNavigation repository..."
-git clone -b jazzy https://github.com/EasyNavigation/EasyNavigation.git $pkg_dir/src/EasyNavigation
-# --- include other necessary repositories if needed ---
+# Source ROS 2 environment
+export ROS_DISTRO=jazzy
+source /opt/ros/$ROS_DISTRO/setup.bash
+rosdep update
 
-echo "Copying example packages..."
-cp -r ../examples/* $pkg_dir/src/
+# Clone the main EasyNavigation repositories
+echo "Cloning EasyNavigation repositories..."
+git clone -b jazzy https://github.com/EasyNavigation/EasyNavigation.git $ws_dir/src/EasyNavigation
+git clone -b jazzy https://github.com/EasyNavigation/NavMap.git $ws_dir/src/NavMap
+git clone -b jazzy https://github.com/EasyNavigation/easynav_plugins.git $ws_dir/src/easynav_plugins
+# Clone yaets dependency
+git clone -b jazzy-devel https://github.com/fmrico/yaets.git $ws_dir/src/yaets
+# --- Extra repositories used in the examples ---
+git clone -b rolling https://github.com/EasyNavigation/easynav_playground_kobuki.git $ws_dir/src/easynav_playground_kobuki
+git clone -b main https://github.com/EasyNavigation/easynav_indoor_testcase.git $ws_dir/src/easynav_indoor_testcase
+
+# Install third-party dependencies using vcs tool
+cd $ws_dir/src
+vcs import . < $ws_dir/src/easynav_playground_kobuki/thirdparty.repos
+
+# echo "Copying example packages..."
+# cp -r ../examples/* $ws_dir/src/
 
 # Navigate to the ROS 2 workspace directory
-cd $pkg_dir 
+cd $ws_dir
 
 # Install all ROS 2 dependencies for the packages in the workspace
 # This ensures all required packages are available before compilation
@@ -39,7 +56,7 @@ colcon build --symlink-install
 # Automatically source the workspace setup in future terminal sessions
 # This makes EasyNavigation commands available in new terminals
 echo "Configuring environment..."
-echo "source $pkg_dir/install/setup.bash" >> ~/.bashrc
+echo "source $ws_dir/install/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 
 echo "====================================================="
