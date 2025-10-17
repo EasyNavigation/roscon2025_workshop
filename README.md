@@ -160,4 +160,5 @@ docker pull your-custom-image:tag
 4. Any custom scripts can be downloaded directly in the browser environment and executed in the terminal.
 
 
-Para ejemplos de Nav2 y ejercicios del workshop, ver: [nav2_playground](../easynav_playground_kobuki/README.md)
+For the first part of the workshop please visit:
+[nav2_playground](../easynav_playground_kobuki/README.md)
