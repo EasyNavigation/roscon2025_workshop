@@ -46,9 +46,7 @@ class WaypointClientNode(Node):
         # Declare parameters
         self.declare_parameter('frame_id', 'map')
         self.declare_parameter('waypoints', [''])
-        self.declare_parameter('loops', 1)
 
-        self.loops_remaining = self.get_parameter('loops').value
         self.waypoints = []
         self.restart_timer = None
 
@@ -67,7 +65,6 @@ class WaypointClientNode(Node):
         """Load waypoints from ROS parameters."""
         self.waypoints.clear()
 
-        # Get waypoint names
         waypoint_names = self.get_parameter('waypoints').value
         frame_id = self.get_parameter('frame_id').value
 
@@ -77,7 +74,6 @@ class WaypointClientNode(Node):
 
         self.get_logger().info(f'Loading {len(waypoint_names)} waypoints')
 
-        # Load each waypoint's coordinates
         for wp_name in waypoint_names:
             # Declare and get waypoint parameter
             self.declare_parameter(wp_name, [0.0])
@@ -112,12 +108,6 @@ class WaypointClientNode(Node):
         if not self.action_client.wait_for_server(timeout_sec=5.0):
             self.get_logger().error('FollowWaypoints action server not available')
             return
-
-        if self.loops_remaining == 0:
-            self.get_logger().info('Loops parameter set to 0: treating as infinite looping.')
-        elif self.loops_remaining > 0:
-            self.get_logger().info(
-                f'Starting waypoint run. Remaining loops (including this): {self.loops_remaining}')
 
         # Create goal message
         goal_msg = FollowWaypoints.Goal()
@@ -168,22 +158,6 @@ class WaypointClientNode(Node):
             self.get_logger().warn('Goal canceled')
         else:
             self.get_logger().error('Unknown result code')
-
-        # Handle looping
-        infinite = (self.loops_remaining == 0)
-        if infinite or self.loops_remaining > 1:
-            self.loops_remaining -= 1
-            if not infinite:
-                self.get_logger().info(
-                    f'Scheduling next loop. Remaining loops: {self.loops_remaining}')
-            else:
-                self.get_logger().info('Scheduling next loop (infinite mode)')
-
-            # Use a short timer to resend goal cleanly
-            self.restart_timer = self.create_timer(0.5, self.restart_callback)
-        else:
-            self.get_logger().info('All loops completed. Shutting down node.')
-            rclpy.shutdown()
 
     def restart_callback(self):
         """Timer callback to restart sending goals."""
