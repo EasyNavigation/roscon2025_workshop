@@ -120,9 +120,6 @@ class PatrollingNode(Node):
                     self.get_logger().info(
                         f'Navigation succesfully finished with message {result.status_message}')
                     
-                    self.pause_start_time = self.get_clock().now()
-                   
-                    self.get_logger().info(f"Waiting time started at waypoint {self.current_goal_index + 1}")
                     self._state = PatrolState.DO_AT_WAYPOINT
 
                 elif nav_state == ClientState.ACCEPTED_AND_NAVIGATING:
@@ -132,17 +129,14 @@ class PatrollingNode(Node):
                     pass
 
             case PatrolState.DO_AT_WAYPOINT:
-                if self.get_clock().now() - self.pause_start_time >= self.pause_duration:
-                    self.get_logger().info(f"Waiting time ended at waypoint {self.current_goal_index + 1}")
-
-                    # Advance to the next waypoint
-                    self.current_goal_index += 1
-                    if self.current_goal_index < len(self._goals.goals):
-                        self._gm.reset()
-                        self._state = PatrolState.IDLE
-                    else:
-                        self.get_logger().info("All waypoints completed")
-                        self._state = PatrolState.FINISHED
+            #    TODO:
+            #    Implement actions at waypoint before proceeding to the next one
+            #    You could add a wait time emulating perform specific tasks here
+            #    You could log data, spin the robot in place, etc.
+            #    Remember to transition to the next IDLE state after completing intermediate actions
+            #    or to the finished state if all waypoints have been visited
+            #    and increment the current_goal_index_ accordingly
+                
 
             case PatrolState.FINISHED:
                 self.get_logger().info('Reset navigation')

@@ -87,13 +87,13 @@ Depending on your solution, you may need to modify the following:
 Once the behavior is implemented and the waypoints are selected, you can test your solution with the following steps:
 
 1. Build the package:
-   ```bash
-   colcon build --packages-select easynav_patrolling_behavior
-    ```
+ ```bash
+colcon build --packages-select easynav_patrolling_behavior
+```
 2. Source the setup file:
-   ```bash
-    source install/setup.bash
-    ```
+```bash
+source install/setup.bash
+```
 3. Launch the Kobuki playground:
 ```bash
 ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
@@ -109,9 +109,9 @@ ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_worksho
 ros2 run easynav_system system_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
 ```
 6. Run the patrolling node with the specified parameters:
-    ```bash
-    ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml
-    ```
+```bash
+ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml
+```
     
 ### Python version
 To implement the patrolling behavior, edit the file located at: `<your-ws-path>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior_py/easynav_patrolling_behavior_py/patrolling_node.py`. 
@@ -126,13 +126,13 @@ Depending on your solution, you may need to modify the following:
 Once the behavior is implemented and the waypoints are selected, you can test your solution with the following steps:
 
 1. Build the package:
-   ```bash
-   colcon build --packages-select easynav_patrolling_behavior_py
-    ```
+```bash
+colcon build --packages-select easynav_patrolling_behavior_py
+```
 2. Source the setup file:
-   ```bash
-    source install/setup.bash
-    ```
+```bash
+source install/setup.bash
+```
 3. Launch the Kobuki playground:
 ```bash
 ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
@@ -148,9 +148,19 @@ ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_worksho
 ros2 run easynav_system system_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
 ```
 6. Run the patrolling launcher using the desired parameters:
-    ```bash
-    ros2 launch easynav_patrolling_behavior_py patrolling.launch.py 
-    ```
+```bash
+ros2 launch easynav_patrolling_behavior_py patrolling.launch.py 
+```
+
+### Troubleshooting
+
+**Issue: System stuck in "requesting" state**
+
+Occasionally, when starting a patrolling task, the system may get stuck in the "requesting" state. If this occurs, try one of the following solutions:
+
+1. **Restart the patrolling node**: Kill the patrolling node (Ctrl+C) and restart it.
+   
+2. **Clear pending goals**: Send a navigation goal manually (via RViz), then restart the patrolling node. The manually sent goal will be cleared, allowing the patrolling sequence to proceed normally.
 
 ## Solutions
 In the solution folder in this exercise folder you have some proposed solutions for both versions.

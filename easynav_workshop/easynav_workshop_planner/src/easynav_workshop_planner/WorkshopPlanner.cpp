@@ -58,7 +58,7 @@ namespace easynav
     node->get_parameter(plugin_name + ".path_wp", path_wp_);
 
     path_pub_ = get_node()->create_publisher<nav_msgs::msg::Path>(
-        node->get_fully_qualified_name() + std::string("/")  + "costmap_planner/path", 10);
+        node->get_fully_qualified_name() + std::string("/") + "/costmap_planner/path", 10);
 
     return {};
   }
@@ -121,16 +121,10 @@ namespace easynav
   void
   WorkshopPlanner::update(NavState &nav_state)
   {
-    // DONE: Check  robot_pose is available in nav_state
-    if (!nav_state.has("robot_pose"))
-    {
-      return;
-    }
-    // DONE: get robot_pose from nav_state (type nav_msgs::msg::Odometry)
-    const auto robot_pose = nav_state.get<nav_msgs::msg::Odometry>("robot_pose");
-    ///////////////////////////
+    // TODO: Check if robot_pose is available in nav_state
+    // TODO: get robot_pose from nav_state (type nav_msgs::msg::Odometry)
+    nav_msgs::msg::Odometry robot_pose; // JUST A PLACEHOLDER, REPLACE IT
 
-    
     current_path_ = create_circular_path(robot_pose, path_radius_, path_wp_, "map");
 
     // Publish the path for visualization
@@ -138,21 +132,14 @@ namespace easynav
     {
       path_pub_->publish(current_path_);
     }
-    
-    // DONE: Add the current path to the NavState
-    nav_state.set("path", current_path_);
 
-    // DONE: Create and store PathInfo
-    PathInfo path_info;
-    path_info.origin = robot_pose.pose.pose.position;
-    path_info.radius = path_radius_;
-    path_info.num_waypoints = path_wp_;
-    nav_state.set("path_info", path_info);
-    //////////////////////////
+    // TODO: Create and store PathInfo struct 
+    // TODO: Store path info type in nav_state
+    // TODO: Store current_path_ in nav_state
 
+    // Create a temporary NavState to use the debug printer for debugging without other information
     NavState temp_state;
     temp_state.set("path_info", nav_state.get<PathInfo>("path_info"));
-
     RCLCPP_INFO(
         get_node()->get_logger(),
         "WorkshopPlanner:\n%s",

@@ -69,13 +69,13 @@ This ensures the custom plugin is properly loaded and configured. The following 
 ![alt text](img/circular_path.png)
 
 1. Build the package:
-   ```bash
-   colcon build --packages-select easynav_workshop_planner
-    ```
+ ```bash
+colcon build --packages-select easynav_workshop_planner
+```
 2. Source the setup file:
-   ```bash
-    source install/setup.bash
-    ```
+```bash
+source install/setup.bash
+```
 3. Launch the Kobuki playground:
 ```bash
 ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
@@ -86,8 +86,9 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
 ```
 
-
 5. Start EasyNav with this exercise params:
 ```bash
 ros2 run easynav_system system_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/4.add_custom_navstate/custom.params.yaml 
 ```
+
+Check all information from the path is provided both in the logger of the `easynav_system` terminal and the TUI.
