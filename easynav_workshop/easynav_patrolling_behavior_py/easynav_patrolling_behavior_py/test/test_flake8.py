@@ -1,0 +1,1 @@
+from ament_flake8.main import main; test_flake8 = main
