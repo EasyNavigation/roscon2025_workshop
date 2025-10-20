@@ -1,0 +1,9 @@
+<class_libraries>
+  <library path="easynav_workshop_planner">
+    <class name="easynav_workshop_planner/WorkshopPlanner"  type="easynav::WorkshopPlanner" base_class_type="easynav::PlannerMethodBase">
+      <description>
+      A circle path planner implementation.
+      </description>
+    </class>
+  </library>
+</class_libraries>

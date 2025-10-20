@@ -26,12 +26,9 @@ except Exception:  # pragma: no cover
     ClientState = None
 
 from rclpy.node import Node
-from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
-from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Goals
 from tf_transformations import quaternion_from_euler
-
-from builtin_interfaces.msg import Time
 
 class PatrolState(Enum):
     IDLE = 0
@@ -62,6 +59,7 @@ class PatrollingNode(Node):
         self.pause_start_time = 0
         self._goals = Goals()
         self._goals.header.frame_id = self.frame_id
+        self._goals.header.stamp = self.get_clock().now().to_msg()
 
         for name in wp_names:
             vals = [0.0, 0.0, 0.0]
@@ -90,13 +88,10 @@ class PatrollingNode(Node):
             self._goals.goals.append(new_wp)
 
         self._gm = GoalManagerClient(node=self)
-
         self.current_goal_index = 0
-        self._state = PatrolState.IDLE
-
         self._timer = self.create_timer(0.2, self._cycle)
         self.get_logger().info('PatrollingNode started')
-
+        self._state = PatrolState.IDLE
 
     def _cycle(self):
         match self._state:
@@ -120,14 +115,16 @@ class PatrollingNode(Node):
                     self.get_logger().debug(
                         f'Navigation finished with error {result.status_message}')
                     self._state = PatrolState.ERROR
+
                 elif nav_state == ClientState.NAVIGATION_FINISHED:
                     result = self._gm.get_result()
                     self.get_logger().info(
                         f'Navigation succesfully finished with message {result.status_message}')
-                    
+
+                    # DONE: Workshop task
                     self.pause_start_time = self.get_clock().now()
-                   
                     self.get_logger().info(f"Waiting time started at waypoint {self.current_goal_index + 1}")
+                    # END DONE: Workshop task
                     self._state = PatrolState.DO_AT_WAYPOINT
 
                 elif nav_state == ClientState.ACCEPTED_AND_NAVIGATING:
@@ -135,8 +132,9 @@ class PatrollingNode(Node):
 
                 else:
                     pass
-                
+
             case PatrolState.DO_AT_WAYPOINT:
+                # DONE: Workshop task
                 if self.get_clock().now() - self.pause_start_time >= self.pause_duration:
                     self.get_logger().info(f"Waiting time ended at waypoint {self.current_goal_index + 1}")
 
@@ -148,6 +146,7 @@ class PatrollingNode(Node):
                     else:
                         self.get_logger().info("All waypoints completed")
                         self._state = PatrolState.FINISHED
+                # END DONE: Workshop task
 
             case PatrolState.FINISHED:
                 self.get_logger().info('Reset navigation')
@@ -155,7 +154,6 @@ class PatrollingNode(Node):
                 nav_state = self._gm.get_state()
                 if nav_state != ClientState.IDLE:
                     self._gm.reset()
-
                 self._state = PatrolState.IDLE
             case PatrolState.ERROR:
                 pass

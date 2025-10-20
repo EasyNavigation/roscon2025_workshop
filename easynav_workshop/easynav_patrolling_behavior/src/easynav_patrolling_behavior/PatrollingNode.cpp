@@ -49,7 +49,8 @@ namespace easynav
     get_parameter("frame_id", frame_id_);
 
     goals_.header.frame_id = frame_id_;
-
+    goals_.header.stamp = now();
+    
     for (const auto &wp : waypoints)
     {
       std::vector<double> wp_coord;
@@ -111,16 +112,17 @@ namespace easynav
                      gm_client_->get_result().status_message.c_str());
         state_ = PatrolState::ERROR;
         break;
+
       case GoalManagerClient::State::NAVIGATION_FINISHED:
         RCLCPP_INFO(get_logger(), "Navigation succesfully finished with message %s",
                     gm_client_->get_result().status_message.c_str());
-        pause_start_time_ = now();
-        RCLCPP_INFO(get_logger(), "Waiting time started at waypoint %zu", current_goal_index_ + 1);
-        state_ = PatrolState::DO_AT_WAYPOINT;
+       
+        state_ = PatrolState::DO_AT_WAYPOINT; // Transition to DO_AT_WAYPOINT state
         break;
+
       case GoalManagerClient::State::ACCEPTED_AND_NAVIGATING:
-        // RCLCPP_INFO(get_logger(), "Goals accepted and navigating");
         break;
+
       default:
         break;
       }
@@ -128,25 +130,13 @@ namespace easynav
     break;
 
     case PatrolState::DO_AT_WAYPOINT:
-      if (now() - pause_start_time_ >= pause_duration_)
-      {
-        RCLCPP_INFO(get_logger(), "Waiting time ended at waypoint %zu", current_goal_index_ + 1);
-
-        // advance to next waypoint
-        ++current_goal_index_;
-        if (current_goal_index_ < goals_.goals.size())
-        {
-          RCLCPP_INFO(get_logger(), "Navigating to waypoint %zu", current_goal_index_ + 1);
-          // gm_client_->send_goal(goals_.goals[current_goal_index_]);
-          gm_client_->reset();
-          state_ = PatrolState::IDLE;
-        }
-        else
-        {
-          RCLCPP_INFO(get_logger(), "All waypoints completed");
-          state_ = PatrolState::FINISHED;
-        }
-      }
+      /// TODO:
+      // Implement actions at waypoint before proceeding to the next one
+      // You could add a wait time emulating perform specific tasks here
+      // You could log data, spin the robot in place, etc.
+      // Remember to transition to the next IDLE state after completing intermediate actions
+      // or to the finished state if all waypoints have been visited
+      // and increment the current_goal_index_ accordingly
       break;
 
     case PatrolState::FINISHED:
@@ -155,7 +145,7 @@ namespace easynav
       state_ = PatrolState::IDLE;
       if (gm_client_->get_state() != GoalManagerClient::State::IDLE)
       {
-        gm_client_->reset();
+        gm_client_->reset(); // Reset the goal manager client to restart patrol
       }
       break;
     case PatrolState::ERROR:

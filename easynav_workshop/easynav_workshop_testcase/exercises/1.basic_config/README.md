@@ -88,7 +88,7 @@ mv /path/to/map/<map_name>.* <your-workspace>/src/nav2_playground/maps/
 colcon build --packages-select nav2_playground
 ```
 
-Once the map files are in your workspace, point the workshop config to the package and map path (see `costmap_workshop.params.yaml` in this exercise folder). If you don't have a custom map, you can use the provided `home` map available in `easynav_workshop/easynav_workshop_testcase/maps/`.
+Once the map files are in your workspace, point the workshop config to the package and map path (see `costmap_workshop.params.yaml` in this exercise folder). If you don't have a custom map, you can use the provided `home` map available in `roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/maps/`.
 
 
 ### Where to set the map in the params file
@@ -115,12 +115,12 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 3. Start EasyNav with the workshop params (in a separate terminal):
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file src/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml
+ros2 run easynav_system system_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
 ```
 
 4. Start RViz (use simulation time):
 ```bash
-ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
 ```
 
 In RViz, use the "2D Nav Goal" tool (toolbar button) to set a goal: click to place the position and drag to set the yaw. The planner will generate a path and the controller should start moving the robot towards the goal.

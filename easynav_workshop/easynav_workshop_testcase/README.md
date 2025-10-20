@@ -58,7 +58,7 @@ ros2 run easynav_system system_main --ros-args --params-file <desired_config_pat
 
 3. Start RViz to visualize the robot and the costmap (use simulation time):
 ```bash
-ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
 ```
 
 ### Exercises
