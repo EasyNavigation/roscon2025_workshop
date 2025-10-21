@@ -28,7 +28,7 @@ jobs:
           package-name: nav2_playground
           import-token: ${{ secrets.GITHUB_TOKEN }}
           target-ros2-distro: jazzy
-          vcs-repo-file-url: ${GITHUB_WORKSPACE}/nav2_playground/thirdparty.repos
+          vcs-repo-file-url: ${GITHUB_WORKSPACE}/exercises/nav2/nav2_playground/thirdparty.repos
           colcon-defaults: |
             {
               "test": {
