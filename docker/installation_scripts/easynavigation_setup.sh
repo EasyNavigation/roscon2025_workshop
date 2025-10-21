@@ -10,7 +10,7 @@
 # Institution: Universidad Rey Juan Carlos
 
 # Set the ROS 2 workspace directory where EasyNavigation will be installed
-export ws_dir=~/easynav_ws
+export ws_dir=~/roscon2025_workshop/easynav_ws
 
 # Update system packages to ensure we have the latest versions and security patches
 echo "Updating system packages..."
@@ -36,9 +36,6 @@ git clone -b main https://github.com/EasyNavigation/easynav_indoor_testcase.git 
 # Install third-party dependencies using vcs tool
 cd $ws_dir/src
 vcs import . < $ws_dir/src/easynav_playground_kobuki/thirdparty.repos
-
-# echo "Copying example packages..."
-# cp -r ../examples/* $ws_dir/src/
 
 # Navigate to the ROS 2 workspace directory
 cd $ws_dir
