@@ -58,7 +58,7 @@ namespace easynav
     node->get_parameter(plugin_name + ".path_wp", path_wp_);
 
     path_pub_ = get_node()->create_publisher<nav_msgs::msg::Path>(
-        node->get_fully_qualified_name() + std::string("/") + "/costmap_planner/path", 10);
+        node->get_fully_qualified_name() + std::string("/") + "costmap_planner/path", 10);
 
     return {};
   }

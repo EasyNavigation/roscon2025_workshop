@@ -43,7 +43,7 @@ The goal of this exercise is to program a robot to traverse a list of waypoints 
 
 ## Waypoints
 
-As an example, a predefined list of four waypoints is available at: `<path-to-ws>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml`
+As an example, a predefined list of four waypoints is available at: `~/easynav_ws/src/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml`
 
 
 ### Generating Custom Waypoints
@@ -75,7 +75,7 @@ You can implement this behavior in either C++ or Python, depending on your prefe
 
 ### Cpp Version
 
-To implement the patrolling behavior, edit the file located at: `<path-to-ws>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/src/easynav_patrolling_behavior/PatrollingNode.cpp`. 
+To implement the patrolling behavior, edit the file located at: `~/easynav_ws/src/easynav_workshop/easynav_patrolling_behavior/src/easynav_patrolling_behavior/PatrollingNode.cpp`. 
 
 Depending on your solution, you may need to modify the following:
 - The `DO_AT_WAYPOINT` state to define actions performed at each waypoint.
@@ -101,20 +101,20 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 4. Start RViz (use simulation time):
 ```bash
-ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
 ```
 
 5. Start EasyNav with the workshop params:
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file src/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
 ```
 6. Run the patrolling node with the specified parameters:
 ```bash
-ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml
+ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file src/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml
 ```
     
 ### Python version
-To implement the patrolling behavior, edit the file located at: `<path-to-ws>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior_py/easynav_patrolling_behavior_py/patrolling_node.py`. 
+To implement the patrolling behavior, edit the file located at: `~/easynav_ws/src/easynav_workshop/easynav_patrolling_behavior_py/easynav_patrolling_behavior_py/patrolling_node.py`. 
 
 Depending on your solution, you may need to modify the following:
 - The `DO_AT_WAYPOINT` state to define actions performed at each waypoint.
@@ -140,27 +140,17 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 4. Start RViz (use simulation time):
 ```bash
-ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
 ```
 
 5. Start EasyNav with the workshop params:
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file src/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
 ```
 6. Run the patrolling launcher using the desired parameters:
 ```bash
 ros2 launch easynav_patrolling_behavior_py patrolling.launch.py 
 ```
-
-### Troubleshooting
-
-**Issue: System stuck in "requesting" state**
-
-Occasionally, when starting a patrolling task, the system may get stuck in the "requesting" state. If this occurs, try one of the following solutions:
-
-1. **Restart the patrolling node**: Kill the patrolling node (Ctrl+C) and restart it.
-   
-2. **Clear pending goals**: Send a navigation goal manually (via RViz), then restart the patrolling node. The manually sent goal will be cleared, allowing the patrolling sequence to proceed normally.
 
 ## Solutions
 In the solution folder in this exercise folder you have some proposed solutions for both versions.

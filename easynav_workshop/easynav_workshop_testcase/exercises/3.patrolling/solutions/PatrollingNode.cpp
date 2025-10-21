@@ -49,7 +49,6 @@ namespace easynav
         get_parameter("frame_id", frame_id_);
 
         goals_.header.frame_id = frame_id_;
-        goals_.header.stamp = now();
         
         for (const auto &wp : waypoints)
         {
@@ -84,18 +83,20 @@ namespace easynav
             if (!initialized_)
             {
                 RCLCPP_INFO(get_logger(), "Initializing patrolling");
-
                 gm_client_ = GoalManagerClient::make_shared(shared_from_this());
                 initialize();
                 initialized_ = true;
             }
-
-            RCLCPP_INFO(get_logger(), "Goals sent");
-
+            
             nav_msgs::msg::Goals single_goal;
             single_goal.header = goals_.header;
             single_goal.goals.push_back(goals_.goals[current_goal_index_]);
+            while (gm_client_->get_state() != GoalManagerClient::State::IDLE)
+            {
+                gm_client_->reset(); // Ensure the client is idle before sending new goals
+            }
             gm_client_->send_goals(single_goal);
+            RCLCPP_INFO(get_logger(), "Goals sent");
             state_ = PatrolState::PATROLLING;
         }
         break;
