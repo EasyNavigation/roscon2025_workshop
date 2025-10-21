@@ -80,7 +80,7 @@ Before we begin a simple navigation task, let’s use the map we created earlier
 1. Copy your map files (`<map>.pgm` and `<map>.yaml`) into the playground package `maps/` directory. Example:
 ```bash
 # Example: move both the .pgm and .yaml into the nav2_playground maps folder
-mv /path/to/map/<map_name>.* <your-workspace>/src/nav2_playground/maps/
+mv /path/to/map/<map_name>.* <path-to-ws>/src/nav2_playground/maps/
 ```
 
 2. Rebuild the playground package to include the maps in the installed data:

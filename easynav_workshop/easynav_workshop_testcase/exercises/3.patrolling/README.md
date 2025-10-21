@@ -43,7 +43,7 @@ The goal of this exercise is to program a robot to traverse a list of waypoints 
 
 ## Waypoints
 
-As an example, a predefined list of four waypoints is available at: `<your-ws-path>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml`
+As an example, a predefined list of four waypoints is available at: `<path-to-ws>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml`
 
 
 ### Generating Custom Waypoints
@@ -75,7 +75,7 @@ You can implement this behavior in either C++ or Python, depending on your prefe
 
 ### Cpp Version
 
-To implement the patrolling behavior, edit the file located at: `<your-ws-path>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/src/easynav_patrolling_behavior/PatrollingNode.cpp`. 
+To implement the patrolling behavior, edit the file located at: `<path-to-ws>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior/src/easynav_patrolling_behavior/PatrollingNode.cpp`. 
 
 Depending on your solution, you may need to modify the following:
 - The `DO_AT_WAYPOINT` state to define actions performed at each waypoint.
@@ -114,7 +114,7 @@ ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file sr
 ```
     
 ### Python version
-To implement the patrolling behavior, edit the file located at: `<your-ws-path>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior_py/easynav_patrolling_behavior_py/patrolling_node.py`. 
+To implement the patrolling behavior, edit the file located at: `<path-to-ws>/src/roscon2025_workshop/easynav_workshop/easynav_patrolling_behavior_py/easynav_patrolling_behavior_py/patrolling_node.py`. 
 
 Depending on your solution, you may need to modify the following:
 - The `DO_AT_WAYPOINT` state to define actions performed at each waypoint.
