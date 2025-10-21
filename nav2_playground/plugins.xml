@@ -1,7 +1,0 @@
-<class_libraries>
-  <library path="nav2_playground">
-    <class type="nav2_playground::PrintPickTaskExecutor" base_class_type="nav2_core::WaypointTaskExecutor">
-      <description>Simulates a pick (prints + delay) at each waypoint.</description>
-    </class>
-  </library>
-</class_libraries>

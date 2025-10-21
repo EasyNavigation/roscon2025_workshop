@@ -1,1 +1,0 @@
-from ament_pep257.main import main; test_pep257 = main
