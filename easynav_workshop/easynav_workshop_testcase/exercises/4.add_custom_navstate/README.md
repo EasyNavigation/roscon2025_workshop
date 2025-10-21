@@ -59,10 +59,18 @@ The same data can be observed from the TUI:
 
 ## Exercise
 
-For this exercise, we have created a simple plugin that generates a circular path based on the robot's pose, a given radius, and a number of waypoints. Your task is to complete the gaps marked with `// TODO` comments, which involve getting and setting information from the NavState blackboard.
+For this exercise, you will work on a plugin designed to generate a circular path based on the robot's current pose, a specified radius, and a defined number of waypoints. Your task is to complete the sections marked with `// TODO` comments. These tasks involve interacting with the NavState blackboard to depict and store data using the following structure:
 
+```cpp
+  struct PathInfo
+  {
+    geometry_msgs::msg::Point origin;
+    double radius;
+    int num_waypoints;
+  };
+```
 
-Once completed, test your implementation using the custom parameters file available in this folder: `src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/4.add_custom_navstate/custom.params.yaml`.
+Once completed, test your implementation using the custom parameters file available in this folder: `~/easynav_ws/src/easynav_workshop/easynav_workshop_testcase/exercises/4.add_custom_navstate/custom.params.yaml`.
 
 This ensures the custom plugin is properly loaded and configured. The following execution should result in this visualization.
 
@@ -83,12 +91,12 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 4. Start RViz (use simulation time): 
 ```bash
-ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
 ```
 
 5. Start EasyNav with this exercise params:
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/4.add_custom_navstate/custom.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file src/easynav_workshop/easynav_workshop_testcase/exercises/4.add_custom_navstate/custom.params.yaml 
 ```
 
 Check all information from the path is provided both in the logger of the `easynav_system` terminal and the TUI.

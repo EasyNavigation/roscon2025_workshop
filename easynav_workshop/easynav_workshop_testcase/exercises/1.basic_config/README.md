@@ -80,7 +80,7 @@ Before we begin a simple navigation task, let’s use the map we created earlier
 1. Copy your map files (`<map>.pgm` and `<map>.yaml`) into the playground package `maps/` directory. Example:
 ```bash
 # Example: move both the .pgm and .yaml into the nav2_playground maps folder
-mv /path/to/map/<map_name>.* <your-workspace>/src/nav2_playground/maps/
+mv ~/easynav_ws/<map_name>.* ~/easynav_ws/src/nav2_playground/maps/
 ```
 
 2. Rebuild the playground package to include the maps in the installed data:
@@ -88,7 +88,7 @@ mv /path/to/map/<map_name>.* <your-workspace>/src/nav2_playground/maps/
 colcon build --packages-select nav2_playground
 ```
 
-Once the map files are in your workspace, point the workshop config to the package and map path (see `costmap_workshop.params.yaml` in this exercise folder). If you don't have a custom map, you can use the provided `home` map available in `roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/maps/`.
+Once the map files are in your workspace, point the workshop config to the package and map path (see `costmap_workshop.params.yaml` in this exercise folder). If you don't have a custom map, you can use the provided `home` map available in `easynav_workshop/easynav_workshop_testcase/maps/`.
 
 
 ### Where to set the map in the params file
@@ -104,7 +104,7 @@ Use the package name that contains the `maps/` folder you copied the files into.
 Source your workspace and launch the playground and EasyNav:
 
 ```bash
-cd <your-workspace>
+cd ~/easynav_ws
 source install/setup.bash
 ```
 
@@ -115,12 +115,12 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 3. Start EasyNav with the workshop params (in a separate terminal):
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file src/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
 ```
 
 4. Start RViz (use simulation time):
 ```bash
-ros2 run rviz2 rviz2 -d src/roscon2025_workshop/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
 ```
 
 In RViz, use the "2D Nav Goal" tool (toolbar button) to set a goal: click to place the position and drag to set the yaw. The planner will generate a path and the controller should start moving the robot towards the goal.
@@ -150,9 +150,8 @@ Let's increase the `inflation_radius` parameter and observe how the obstacles be
 - Config file not found by the system: double-check the path you passed to `--params-file`. Use an absolute path or a workspace-relative path (example above).
 - Map not loaded / wrong map: confirm the `.pgm` and `.yaml` pair are in the package `maps/` directory and that the YAML references the correct PGM filename.
 - Build issues after adding maps: re-run `colcon build --packages-select <playground_package>` and then `source install/setup.bash`.
-- Real-time permissions: if you see errors about real-time priority, add the following lines to `/etc/security/limits.conf` (replace `<username>` with your user), then **reboot**:
+- Real-time permissions: if you see want to use real-time priority, add the following lines to `/etc/security/limits.conf` (replace `<username>` with your user), then **reboot**:
 
 ```text
-<username> - memlock unlimited
 <username> - rtprio 98
 ```
