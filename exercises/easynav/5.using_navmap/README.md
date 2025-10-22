@@ -22,7 +22,7 @@ In this part, we will to read information from a `*.navmap` file and using NavMa
 
 Follow the steps:
 
-1. In a package of your workspace, set a `parameters file` where you configure a Maps Manager description (You can use a template called `navmap.params.urjc.yaml` located in this folder). The Maps Manager description suggested is shown as follow:
+1. In a package of your workspace, set a `parameters file` where you configure a Maps Manager description (You can use a template called `navmap.params.yaml` located in this folder). The Maps Manager description suggested is shown as follow:
 
 ```yaml
 maps_manager_node:
@@ -100,7 +100,7 @@ localizer_node:
 
 Where the plugin used is `easynav_navmap_localizer/AMCLLocalizer`, which is an Adaptive Monte Carlo Localization (AMCL) implementation for NavMap representation.
 
-2. Once you have set the Localizer description in the parameters file, you can launch EasyNav system again with the same command as before. The Localizer will use the NavMap published by the Maps Manager to localize the robot. We can visualize the estimated pose of the robot in RViz2 by adding a `PoseArray` display and setting the topic to `//localizer_node/dummy/particles`.
+2. Once you have set the Localizer description in the parameters file, you can launch EasyNav system again with the same command as before. The Localizer will use the NavMap published by the Maps Manager to localize the robot. We can visualize the estimated pose of the robot in RViz2 by adding a `PoseArray` display and setting the topic to `/localizer_node/dummy/particles`.
 
 ![posearray](./img/posearray.png)
 
@@ -142,7 +142,7 @@ Now you can localize using NavMap representation while teleoperating the robot i
 
 ## How to Visualize a Bonxai
 
-Bonxai is another world representation integrated into EasyNav. It is a 3D voxel-based representation that allows to represent complex environments efficiently.
+[Bonxai](https://github.com/facontidavide/Bonxai) is another world representation integrated into EasyNav. It is a 3D voxel-based representation that allows to represent complex environments efficiently.
 
 To visualize a Bonxai map, you can follow similar steps as for NavMap, but using the Bonxai Maps Manager and Bonxai Display in RViz2.
 
