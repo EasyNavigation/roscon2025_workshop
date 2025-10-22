@@ -60,6 +60,7 @@ else
 fi
 
 # ROS dependency installation
+pip install "numpy<2.0" --break-system-packages
 echo "Installing ROS dependencies"
 cd "$WORKSHOP_WS_DIR"
 rosdep update
@@ -67,3 +68,11 @@ rosdep install --from-paths src --ignore-src -r -y
 
 echo "Building workspace"
 colcon build --symlink-install
+
+echo "Configuring environment"
+echo "source $WORKSHOP_WS_DIR/install/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+echo "====================================================="
+echo "              WORKSHOP PKGS INSTALLED                "
+echo "====================================================="
