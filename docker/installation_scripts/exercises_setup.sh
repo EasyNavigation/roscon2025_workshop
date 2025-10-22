@@ -7,7 +7,6 @@
 # Date: 22/10/25
 # Institution: Universidad Rey Juan Carlos
 
-#!/bin/bash
 
 # Repository URL
 REPO_URL="https://github.com/EasyNavigation/roscon2025_workshop.git"
@@ -18,6 +17,14 @@ WORKSHOP_WS="$DESTINATION/workshop_ws"
 
 # Folder to download
 FOLDER="exercises"
+
+
+# Remove destination if it already exists
+if [ -d "$DESTINATION" ]; then
+    echo "Removing existing directory $DESTINATION"
+    rm -rf "$DESTINATION"
+fi
+
 
 # Clone the repository without checking out files
 echo "Cloning repository..."
@@ -42,7 +49,7 @@ mkdir -p "$WORKSHOP_WS/src"
 
 # Copy easynav_playground into src
 PLAYGROUND_SRC="$DESTINATION/$FOLDER/easynav/easynav_playground"
-PLAYGROUND_DEST="$WORKSHOP_WS/src/"
+PLAYGROUND_DEST="$WORKSHOP_WS/src"
 
 if [ -d "$PLAYGROUND_SRC" ]; then
     echo "Copying easynav_playground to workspace"
@@ -55,7 +62,7 @@ fi
 
 # Copy nav2_playground into src
 NAV2_SRC="$DESTINATION/$FOLDER/nav2/nav2_playground"
-NAV2_DEST="$WORKSHOP_WS/src/"
+NAV2_DEST="$WORKSHOP_WS/src"
 
 if [ -d "$NAV2_SRC" ]; then
     echo "Copying nav2_playground to workspace"
@@ -65,21 +72,3 @@ else
     echo "Error: Source folder not found at $NAV2_SRC"
     exit 1
 fi
-
-# ROS dependency installation
-pip install "numpy<2.0" --break-system-packages
-echo "Installing ROS dependencies"
-cd "$WORKSHOP_WS"
-rosdep update
-rosdep install --from-paths src --ignore-src -r -y
-
-echo "Building workspace"
-colcon build --symlink-install
-
-echo "Configuring environment"
-echo "source $WORKSHOP_WS/install/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-
-echo "====================================================="
-echo "              WORKSHOP PKGS INSTALLED                "
-echo "====================================================="
