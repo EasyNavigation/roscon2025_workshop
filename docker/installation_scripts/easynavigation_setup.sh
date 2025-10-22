@@ -10,7 +10,7 @@
 # Institution: Universidad Rey Juan Carlos
 
 # Set the ROS 2 workspace directory where EasyNavigation will be installed
-export ws_dir=~/roscon2025_workshop/easynav_ws
+export ws_dir=~/easynav_ws
 
 # Update system packages to ensure we have the latest versions and security patches
 echo "Updating system packages..."
