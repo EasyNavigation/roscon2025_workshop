@@ -14,6 +14,7 @@ REPO_URL="https://github.com/EasyNavigation/roscon2025_workshop.git"
 
 # Destination folder in home directory
 DESTINATION="$HOME/roscon2025_workshop"
+WORKSHOP_WS="$HOME/workshop_ws"
 
 # Folder to download
 FOLDER="exercises"
@@ -38,6 +39,31 @@ git sparse-checkout init --cone
 git sparse-checkout set "$FOLDER"
 
 # Checkout the main branch
-git checkout main
+git checkout docker_test
 
 echo "Exercises folder downloaded to $DESTINATION/$FOLDER"
+
+# Set up workshop_ws
+mkdir -p "$WORKSHOP_WS/src"
+
+# Copy easynav_playground into src
+PLAYGROUND_SRC="$DESTINATION/$FOLDER/easynav/easynav_playground"
+PLAYGROUND_DEST="$WORKSHOP_WS/src/easynav_playground"
+
+if [ -d "$PLAYGROUND_SRC" ]; then
+    echo "Copying easynav_playground to workspace"
+    cp -r "$PLAYGROUND_SRC" "$PLAYGROUND_DEST"
+    echo "Copied to $PLAYGROUND_DEST"
+else
+    echo "Error: Source folder not found at $PLAYGROUND_SRC"
+    exit 1
+fi
+
+# ROS dependency installation
+echo "Installing ROS dependencies"
+cd "$WORKSHOP_WS_DIR"
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y
+
+echo "Building workspace"
+colcon build --symlink-install
