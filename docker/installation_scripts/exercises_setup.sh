@@ -14,7 +14,7 @@ REPO_URL="https://github.com/EasyNavigation/roscon2025_workshop.git"
 
 # Destination folder in home directory
 DESTINATION="$HOME/roscon2025_workshop"
-WORKSHOP_WS="$HOME/workshop_ws"
+WORKSHOP_WS="$DESTINATION/workshop_ws"
 
 # Folder to download
 FOLDER="exercises"
