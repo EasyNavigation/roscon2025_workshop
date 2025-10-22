@@ -42,7 +42,7 @@ mkdir -p "$WORKSHOP_WS/src"
 
 # Copy easynav_playground into src
 PLAYGROUND_SRC="$DESTINATION/$FOLDER/easynav/easynav_playground"
-PLAYGROUND_DEST="$WORKSHOP_WS/src/easynav_playground"
+PLAYGROUND_DEST="$WORKSHOP_WS/src/"
 
 if [ -d "$PLAYGROUND_SRC" ]; then
     echo "Copying easynav_playground to workspace"
@@ -55,7 +55,7 @@ fi
 
 # Copy nav2_playground into src
 NAV2_SRC="$DESTINATION/$FOLDER/nav2/nav2_playground"
-NAV2_DEST="$WORKSHOP_WS/src/nav2_playground"
+NAV2_DEST="$WORKSHOP_WS/src/"
 
 if [ -d "$NAV2_SRC" ]; then
     echo "Copying nav2_playground to workspace"
