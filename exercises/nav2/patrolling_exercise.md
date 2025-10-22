@@ -18,10 +18,11 @@ You need to implement the `DO_SOMETHING_AT_WAYPOINT` state in the patrolling nod
 
 You can choose either the **C++** or **Python** implementation (or both!):
 
-- **C++**: `src/nav2_playground/patrolling_node_template.cpp`
-- **Python**: `scripts/patrolling_node_template.py`
+- **C++**: [exercises/nav2/nav2_playground/src/nav2_playground/patrolling_node_template.cpp](src/nav2_playground/patrolling_node_template.cpp)
+- **Python**: [exercises/nav2/nav2_playground/scripts/patrolling_node_template.py](https://github.com/EasyNavigation/roscon2025_workshop/blob/main/exercises/nav2/nav2_playground/scripts/patrolling_node_template.py)
 
-### 🔍 What You Need to Do
+
+### What You Need to Do
 
 #### Step 1: Locate the Template Code
 
