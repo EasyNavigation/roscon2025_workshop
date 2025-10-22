@@ -1,0 +1,80 @@
+controller_node:
+  ros__parameters:
+    use_sim_time: true
+    controller_types: [dummy]
+    dummy:
+      rt_freq: 30.0 
+      plugin: easynav_controller/DummyController
+      cycle_time_nort: 0.01
+      cycle_time_rt: 0.001
+
+localizer_node:
+  ros__parameters:
+    use_sim_time: true
+    localizer_types: [dummy]
+    dummy:
+      rt_freq: 50.0
+      freq: 5.0
+      reseed_freq: 0.1
+      plugin: easynav_navmap_localizer/AMCLLocalizer
+      num_particles: 100
+      noise_translation: 0.1
+      noise_rotation: 0.03
+      noise_translation_to_rotation: 0.02
+      min_noise_xy: 0.2
+      min_noise_yaw: 0.1
+      compute_odom_from_tf: true 
+      initial_pose:
+        x: 0.0
+        y: 0.0
+        yaw: 0.0
+        std_dev_xy: 0.05
+        std_dev_yaw: 0.01
+
+maps_manager_node:
+  ros__parameters:
+    use_sim_time: true
+    map_types: [<your type here 1>, <your type here 2>] # could be more than one (separated by commas)
+    <your type here 1>:
+      freq: <desired frequency> 
+      plugin: <plugin name> # Usually is a plugin_tape/plugin_name 
+      package: <pkg where save/load maps>
+      <your type here 1>_path_file: maps/<File name>
+    <your type here 2>:
+      freq: <desired frequency> 
+      plugin: <plugin name> # Usually is a plugin_tape/plugin_name 
+      package: <pkg where save/load maps>
+      <your type here 2>_path_file: maps/<File name>
+
+planner_node:
+  ros__parameters:
+    use_sim_time: true
+    planner_types: [dummy]
+    dummy:
+      freq: 1.0
+      plugin: easynav_planner/DummyPlanner
+      cycle_time_nort: 0.2
+      cycle_time_rt: 0.001
+
+sensors_node:
+  ros__parameters:
+    use_sim_time: true
+    forget_time: 0.5
+    sensors: [laser, camera, imu]
+    perception_default_frame: odom
+    laser:
+      topic: front_laser/points
+      type: sensor_msgs/msg/PointCloud2
+    camera:
+      topic: front_camera/depth/color/points
+      type: sensor_msgs/msg/PointCloud2
+    imu:
+      topic: imu/data
+      type: sensor_msgs/msg/Imu
+
+system_node:
+  ros__parameters:
+    use_sim_time: true
+    use_real_time: false
+    position_tolerance: 0.3
+    angle_tolerance: 0.15
