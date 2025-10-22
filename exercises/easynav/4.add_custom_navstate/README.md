@@ -70,7 +70,7 @@ For this exercise, you will work on a plugin designed to generate a circular pat
   };
 ```
 
-Once completed, test your implementation using the custom parameters file available in this folder: `~/easynav_ws/src/easynav_workshop/easynav_workshop_testcase/exercises/4.add_custom_navstate/custom.params.yaml`.
+Once completed, test your implementation using the custom parameters file available in this folder: `~/roscon2025_workshop/exercises/easynav/4.add_custom_navstate/custom.params.yaml`.
 
 This ensures the custom plugin is properly loaded and configured. The following execution should result in this visualization.
 
@@ -91,12 +91,12 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 4. Start RViz (use simulation time): 
 ```bash
-ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
 ```
 
 5. Start EasyNav with this exercise params:
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file src/easynav_workshop/easynav_workshop_testcase/exercises/4.add_custom_navstate/custom.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/exercises/easynav/4.add_custom_navstate/custom.params.yaml 
 ```
 
 Check all information from the path is provided both in the logger of the `easynav_system` terminal and the TUI.

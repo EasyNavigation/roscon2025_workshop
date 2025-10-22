@@ -54,8 +54,8 @@ maps_manager_node:
     costmap_manager:
       freq: 10.0
       plugin: easynav_costmap_maps_manager/CostmapMapsManager
-      package: nav2_playground                # easynav_workshop_testcase
-      map_path_file: maps/aws_house.yaml      # maps/home.yaml
+      package: easynav_workshop_testcase  # substitute with nav2 package
+      map_path_file: maps/home.yaml       # substitute with map you've just created
       filters: [inflation, obstacles]
       inflation:
         plugin: easynav_costmap_maps_manager/CostmapMapsManager/InflationFilter
