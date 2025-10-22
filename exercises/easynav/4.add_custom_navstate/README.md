@@ -84,16 +84,15 @@ colcon build --packages-select easynav_workshop_planner
 ```bash
 source install/setup.bash
 ```
-3. Launch the Kobuki playground:
+3. Launch the Kobuki playground. We can use it without graphic interface:
 ```bash
-ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
+ros2 launch easynav_playground_kobuki playground_kobuki.launch.py gui:=false
 ```
 
-4. Start RViz (use simulation time): 
+4. Start RViz (use simulation time):
 ```bash
 ros2 run rviz2 rviz2 -d ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
 ```
-
 5. Start EasyNav with this exercise params:
 ```bash
 ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/exercises/easynav/4.add_custom_navstate/custom.params.yaml 

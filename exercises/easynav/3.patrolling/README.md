@@ -94,9 +94,9 @@ colcon build --packages-select easynav_patrolling_behavior
 ```bash
 source install/setup.bash
 ```
-3. Launch the Kobuki playground:
+3. Launch the Kobuki playground. We can use it without graphic interface:
 ```bash
-ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
+ros2 launch easynav_playground_kobuki playground_kobuki.launch.py gui:=false
 ```
 
 4. Start RViz (use simulation time):
@@ -106,11 +106,11 @@ ros2 run rviz2 rviz2 -d ~/roscon2025_workshop/workshop_ws/src/easynav_playground
 
 5. Start EasyNav with the workshop params:
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/workshop_ws/src/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/exercises/easynav/1.basic_config/costmap_workshop.params.yaml 
 ```
 6. Run the patrolling node with the specified parameters:
 ```bash
-ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file src/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml
+ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_patrolling_behavior/config/patrolling_params.yaml
 ```
     
 ### Python version
@@ -133,9 +133,9 @@ colcon build --packages-select easynav_patrolling_behavior_py
 ```bash
 source install/setup.bash
 ```
-3. Launch the Kobuki playground:
+3. Launch the Kobuki playground. We can use it without graphic interface:
 ```bash
-ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
+ros2 launch easynav_playground_kobuki playground_kobuki.launch.py gui:=false
 ```
 
 4. Start RViz (use simulation time):
@@ -151,6 +151,10 @@ ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_worksh
 ```bash
 ros2 launch easynav_patrolling_behavior_py patrolling.launch.py 
 ```
+
+### Troubleshooting
+- If you encounter issues with the **patrolling** module in Python, you may need to install an older version of NumPy:`pip install "numpy<2"`
+- Occasionally, when starting navigation, the system may get stuck because the goal is not received, yet it remains in a state that prevents sending a new one. If this happens, terminate both the system and patrolling processes, then run them again.
 
 ## Solutions
 In the solution folder of this exercise folder you have some proposed approaches for both versions.

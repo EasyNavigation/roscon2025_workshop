@@ -139,7 +139,15 @@ namespace easynav
 
     // Create a temporary NavState to use the debug printer for debugging without other information
     NavState temp_state;
-    temp_state.set("path_info", nav_state.get<PathInfo>("path_info"));
+    if (nav_state.has("path_info"))
+    {
+      temp_state.set("path_info", nav_state.get<PathInfo>("path_info"));
+      RCLCPP_INFO(
+          get_node()->get_logger(),
+          "WorkshopPlanner:\n%s",
+          temp_state.debug_string().c_str());
+    }
+
     RCLCPP_INFO(
         get_node()->get_logger(),
         "WorkshopPlanner:\n%s",

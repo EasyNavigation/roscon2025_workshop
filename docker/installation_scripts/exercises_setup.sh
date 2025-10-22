@@ -25,7 +25,6 @@ if [ -d "$DESTINATION" ]; then
     rm -rf "$DESTINATION"
 fi
 
-
 # Clone the repository without checking out files
 echo "Cloning repository..."
 git clone --no-checkout --depth 1 "$REPO_URL" "$DESTINATION"
@@ -53,7 +52,7 @@ PLAYGROUND_DEST="$WORKSHOP_WS/src"
 
 if [ -d "$PLAYGROUND_SRC" ]; then
     echo "Copying easynav_playground to workspace"
-    cp -r "$PLAYGROUND_SRC" "$PLAYGROUND_DEST"
+    mv "$PLAYGROUND_SRC" "$PLAYGROUND_DEST"
     echo "Copied to $PLAYGROUND_DEST"
 else
     echo "Error: Source folder not found at $PLAYGROUND_SRC"
@@ -66,7 +65,7 @@ NAV2_DEST="$WORKSHOP_WS/src"
 
 if [ -d "$NAV2_SRC" ]; then
     echo "Copying nav2_playground to workspace"
-    cp -r "$NAV2_SRC" "$NAV2_DEST"
+    mv "$NAV2_SRC" "$NAV2_DEST"
     echo "Copied to $NAV2_DEST"
 else
     echo "Error: Source folder not found at $NAV2_SRC"

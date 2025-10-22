@@ -58,17 +58,17 @@ namespace easynav
     node->get_parameter(plugin_name + ".path_wp", path_wp_);
 
     path_pub_ = get_node()->create_publisher<nav_msgs::msg::Path>(
-        node->get_fully_qualified_name() + std::string("/")  + "costmap_planner/path", 10);
+        node->get_fully_qualified_name() + std::string("/") + "costmap_planner/path", 10);
 
     return {};
   }
 
   nav_msgs::msg::Path
   WorkshopPlanner::create_circular_path(
-    const nav_msgs::msg::Odometry &robot_pose,
-    double radius,
-    int num_waypoints,
-    const std::string &frame_id)
+      const nav_msgs::msg::Odometry &robot_pose,
+      double radius,
+      int num_waypoints,
+      const std::string &frame_id)
   {
     nav_msgs::msg::Path path;
     path.header.frame_id = frame_id;
@@ -130,7 +130,6 @@ namespace easynav
     const auto robot_pose = nav_state.get<nav_msgs::msg::Odometry>("robot_pose");
     ///////////////////////////
 
-    
     current_path_ = create_circular_path(robot_pose, path_radius_, path_wp_, "map");
 
     // Publish the path for visualization
@@ -138,7 +137,7 @@ namespace easynav
     {
       path_pub_->publish(current_path_);
     }
-    
+
     // DONE: Add the current path to the NavState
     nav_state.set("path", current_path_);
 
@@ -151,8 +150,15 @@ namespace easynav
     //////////////////////////
 
     NavState temp_state;
-    temp_state.set("path_info", nav_state.get<PathInfo>("path_info"));
-
+    if (nav_state.has("path_info"))
+    {
+      temp_state.set("path_info", nav_state.get<PathInfo>("path_info"));
+      RCLCPP_INFO(
+          get_node()->get_logger(),
+          "WorkshopPlanner:\n%s",
+          temp_state.debug_string().c_str());
+    }
+    
     RCLCPP_INFO(
         get_node()->get_logger(),
         "WorkshopPlanner:\n%s",
