@@ -91,5 +91,5 @@ echo "source $WORKSHOP_WS/install/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 
 echo "====================================================="
-echo "              EASYNAVIGATION INSTALLED               "
+echo "              EXERCISES INSTALLED               "
 echo "====================================================="
