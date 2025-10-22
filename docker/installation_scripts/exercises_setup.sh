@@ -19,12 +19,6 @@ WORKSHOP_WS="$DESTINATION/workshop_ws"
 # Folder to download
 FOLDER="exercises"
 
-# Remove destination if it already exists
-if [ -d "$DESTINATION" ]; then
-    echo "Removing existing directory $DESTINATION"
-    rm -rf "$DESTINATION"
-fi
-
 # Clone the repository without checking out files
 echo "Cloning repository..."
 git clone --no-checkout --depth 1  --branch docker_test "$REPO_URL" "$DESTINATION"
@@ -62,7 +56,7 @@ fi
 # ROS dependency installation
 pip install "numpy<2.0" --break-system-packages
 echo "Installing ROS dependencies"
-cd "$WORKSHOP_WS_DIR"
+cd "$WORKSHOP_WS"
 rosdep update
 rosdep install --from-paths src --ignore-src -r -y
 
@@ -70,7 +64,7 @@ echo "Building workspace"
 colcon build --symlink-install
 
 echo "Configuring environment"
-echo "source $WORKSHOP_WS_DIR/install/setup.bash" >> ~/.bashrc
+echo "source $WORKSHOP_WS/install/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 
 echo "====================================================="
