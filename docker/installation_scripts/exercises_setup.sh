@@ -72,3 +72,24 @@ else
     echo "Error: Source folder not found at $NAV2_SRC"
     exit 1
 fi
+
+cd "$WORKSHOP_WS" || exit 1
+# Install all ROS 2 dependencies for the packages in the workspace
+# This ensures all required packages are available before compilation
+echo "Installing ROS 2 dependencies..."
+rosdep install --from-paths src --ignore-src -r -y
+
+# Build all packages in the workspace using colcon
+# --symlink-install creates symbolic links for faster development iteration
+echo "Building EasyNavigation packages..."
+colcon build --symlink-install
+
+# Automatically source the workspace setup in future terminal sessions
+# This makes EasyNavigation commands available in new terminals
+echo "Configuring environment..."
+echo "source $WORKSHOP_WS/install/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+echo "====================================================="
+echo "              EASYNAVIGATION INSTALLED               "
+echo "====================================================="
