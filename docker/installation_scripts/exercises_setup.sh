@@ -53,6 +53,19 @@ else
     exit 1
 fi
 
+# Copy nav2_playground into src
+NAV2_SRC="$DESTINATION/$FOLDER/nav2/nav2_playground"
+NAV2_DEST="$WORKSHOP_WS/src/nav2_playground"
+
+if [ -d "$NAV2_SRC" ]; then
+    echo "Copying nav2_playground to workspace"
+    cp -r "$NAV2_SRC" "$NAV2_DEST"
+    echo "Copied to $NAV2_DEST"
+else
+    echo "Error: Source folder not found at $NAV2_SRC"
+    exit 1
+fi
+
 # ROS dependency installation
 pip install "numpy<2.0" --break-system-packages
 echo "Installing ROS dependencies"
