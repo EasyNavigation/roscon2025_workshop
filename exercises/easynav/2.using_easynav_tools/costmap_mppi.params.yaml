@@ -1,13 +1,12 @@
 controller_node:
   ros__parameters:
     use_sim_time: true
-    controller_types: [mppi]
-    mppi:
-      rt_freq: 30.0
-      plugin: easynav_mppi_controller/MPPIController
-      max_linear_velocity: 0.8  
-      max_angular_velocity: 0.5
-      safety_radius: 1.5
+    controller_types: [<your type here>]
+    <your type here>:
+        rt_freq: <desired real-time frequency>
+        plugin: <desired controller plugin>
+        # specific parameters for the chosen controller
+
 
 localizer_node:
   ros__parameters:
@@ -36,8 +35,8 @@ maps_manager_node:
     costmap_manager:
       freq: 10.0
       plugin: easynav_costmap_maps_manager/CostmapMapsManager
-      package: nav2_playground                # easynav_workshop_testcase
-      map_path_file: maps/aws_house.yaml      # maps/home.yaml
+      package: easynav_workshop_testcase  # substitute with nav2 package
+      map_path_file: maps/home.yaml       # substitute with map you've just created
       filters: [inflation, obstacles]
       inflation:
         plugin: easynav_costmap_maps_manager/CostmapMapsManager/InflationFilter

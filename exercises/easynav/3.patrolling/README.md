@@ -43,7 +43,7 @@ The goal of this exercise is to program a robot to traverse a list of waypoints 
 
 ## Waypoints
 
-As an example, a predefined list of four waypoints is available at: `~/easynav_ws/src/easynav_workshop/easynav_patrolling_behavior/config/patrolling_params.yaml`
+As an example, a predefined list of four waypoints is available at: `~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_patrolling_behavior/config/patrolling_params.yaml`
 
 
 ### Generating Custom Waypoints
@@ -75,7 +75,7 @@ You can implement this behavior in either C++ or Python, depending on your prefe
 
 ### Cpp Version
 
-To implement the patrolling behavior, edit the file located at: `~/easynav_ws/src/easynav_workshop/easynav_patrolling_behavior/src/easynav_patrolling_behavior/PatrollingNode.cpp`. 
+To implement the patrolling behavior, edit the file located at: `~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_patrolling_behavior/src/easynav_patrolling_behavior/PatrollingNode.cpp`. 
 
 Depending on your solution, you may need to modify the following:
 - The `DO_AT_WAYPOINT` state to define actions performed at each waypoint.
@@ -101,12 +101,12 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 4. Start RViz (use simulation time):
 ```bash
-ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
 ```
 
 5. Start EasyNav with the workshop params:
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file src/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/workshop_ws/src/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
 ```
 6. Run the patrolling node with the specified parameters:
 ```bash
@@ -140,12 +140,12 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 4. Start RViz (use simulation time):
 ```bash
-ros2 run rviz2 rviz2 -d src/easynav_workshop/easynav_workshop_testcase/rviz/costmap.rviz --ros-args -p use_sim_time:=true
+ros2 run rviz2 rviz2 -d ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
 ```
 
 5. Start EasyNav with the workshop params:
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file src/easynav_workshop/easynav_workshop_testcase/exercises/1.basic_config/costmap_workshop.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/exercises/easynav/1.basic_config/costmap_workshop.params.yaml 
 ```
 6. Run the patrolling launcher using the desired parameters:
 ```bash
@@ -153,4 +153,4 @@ ros2 launch easynav_patrolling_behavior_py patrolling.launch.py
 ```
 
 ## Solutions
-In the solution folder in this exercise folder you have some proposed solutions for both versions.
+In the solution folder of this exercise folder you have some proposed approaches for both versions.
