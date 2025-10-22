@@ -32,10 +32,12 @@ git clone -b jazzy-devel https://github.com/fmrico/yaets.git $ws_dir/src/yaets
 # --- Extra repositories used in the examples ---
 git clone -b rolling https://github.com/EasyNavigation/easynav_playground_kobuki.git $ws_dir/src/easynav_playground_kobuki
 git clone -b main https://github.com/EasyNavigation/easynav_indoor_testcase.git $ws_dir/src/easynav_indoor_testcase
+git clone -b rolling https://github.com/EasyNavigation/easynav_playground_summit.git $ws_dir/src/easynav_playground_summit
 
 # Install third-party dependencies using vcs tool
 cd $ws_dir/src
 vcs import . < $ws_dir/src/easynav_playground_kobuki/thirdparty.repos
+vcs import . < $ws_dir/src/easynav_playground_summit/thirdparty.repos
 
 # Navigate to the ROS 2 workspace directory
 cd $ws_dir
