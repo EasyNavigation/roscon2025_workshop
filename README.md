@@ -1,4 +1,4 @@
-# EasyNavigation Docker Environment
+# ROSCon 2025 Navigation Workshop
 This guide helps developers and researchers quickly set up and test the EasyNavigation robotics platform using Docker and ROS 2. It provides a hassle-free way to try EasyNavigation without complex local installations, supporting both Linux and non-Linux systems through containerization.
 
 ---
