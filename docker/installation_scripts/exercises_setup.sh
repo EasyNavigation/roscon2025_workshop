@@ -21,7 +21,7 @@ FOLDER="exercises"
 
 # Clone the repository without checking out files
 echo "Cloning repository..."
-git clone --no-checkout --depth 1  --branch docker_test "$REPO_URL" "$DESTINATION"
+git clone --no-checkout --depth 1 "$REPO_URL" "$DESTINATION"
 
 # Navigate to the repository directory
 cd "$DESTINATION" || exit 1
@@ -33,7 +33,7 @@ git sparse-checkout init --cone
 git sparse-checkout set "$FOLDER"
 
 # Checkout the main branch
-git checkout docker_test
+git checkout main
 
 echo "Exercises folder downloaded to $DESTINATION/$FOLDER"
 
