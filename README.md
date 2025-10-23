@@ -12,6 +12,11 @@ This guide helps developers and researchers quickly set up and test the EasyNavi
  - **Educators**: Use the containerized environment for teaching navigation algorithms.
 
 ---
+# Surveys
+  - Before workshop: https://forms.office.com/e/CGbmjFx2tN
+  - After workshop: https://forms.office.com/e/VvB3wwBL76
+
+---
 # Installation
 Choose your preferred setup method:
 - **Option 1**: Local installation (Linux only, Ubuntu 24.04) - For advanced users who want direct system integration
