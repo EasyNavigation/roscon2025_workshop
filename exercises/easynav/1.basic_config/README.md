@@ -131,7 +131,7 @@ Let's increase the `inflation_radius` parameter and observe how the obstacles be
 - Config file not found by the system: double-check the path you passed to `--params-file`. Use an absolute path or a workspace-relative path (example above).
 - Map not loaded / wrong map: confirm the `.pgm` and `.yaml` pair are in the package `maps/` directory and that the YAML references the correct PGM filename.
 
-- Real-time permissions: if you see want to use real-time priority, add the following lines to `/etc/security/limits.conf` (replace `<username>` with your user), then **reboot**:
+- Real-time permissions: if you want to use real-time priority, add the following lines to `/etc/security/limits.conf` (replace `<username>` with your user), then **reboot**:
 
 ```text
 <username> - rtprio 98
