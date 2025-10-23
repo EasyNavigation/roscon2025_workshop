@@ -158,11 +158,6 @@ namespace easynav
           "WorkshopPlanner:\n%s",
           temp_state.debug_string().c_str());
     }
-    
-    RCLCPP_INFO(
-        get_node()->get_logger(),
-        "WorkshopPlanner:\n%s",
-        temp_state.debug_string().c_str());
   }
 
 } // namespace easynav
