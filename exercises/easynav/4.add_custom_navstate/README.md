@@ -16,7 +16,7 @@ This exercise is focused on accessing data in the blackboard. To check if a valu
 if (nav_state.has("robot_pose")) {
   // do something
 }
-``
+```
 
 To read a value, use the templated get method:
 ```cpp
