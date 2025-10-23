@@ -1,7 +1,7 @@
 # ROSCon 2025 Navigation Workshop
 This guide helps developers and researchers quickly set up and test the EasyNavigation robotics platform using Docker and ROS 2. It provides a hassle-free way to try EasyNavigation without complex local installations, supporting both Linux and non-Linux systems through containerization. You can follow the slides at :
-- [Nav2](https://drive.google.com/file/d/1YQ84XOYeSj4ydHGwEvYJdSaqsnGepyMN/view?usp=drivesdk)
-- [Easynav](tbdlink.com)
+- [Nav2](https://github.com/EasyNavigation/roscon2025_workshop/blob/main/slides/nav2.pdf)
+- [Easynav](https://github.com/EasyNavigation/roscon2025_workshop/blob/main/slides/nav2.pdf)
 
 ---
 
