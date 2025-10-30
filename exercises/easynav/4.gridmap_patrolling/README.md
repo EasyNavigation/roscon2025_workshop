@@ -1,4 +1,4 @@
-# Exercise 3: Patrolling behavior
+# Exercise 4: Patrolling behavior
 
 The patrolling behavior is a simple example of commanding navigation goals programmatically. It allows a robot to automatically navigate through a series of predefined waypoints on a map. These waypoints are defined in a YAML configuration file. It relies on the Goal Manager Client available both for C++ ([GoalManagerClient.cpp](https://github.com/EasyNavigation/EasyNavigation/blob/jazzy/easynav_system/src/easynav_system/GoalManagerClient.cpp)) and Python ([goal_manager_client.py](https://github.com/EasyNavigation/EasyNavigation/blob/jazzy/easynav_support_py/easynav_goalmanager_py/goal_manager_client.py)).
 
@@ -39,11 +39,11 @@ Both the C++ and Python implementations use the same GoalManager interface, so t
 
 # Exercise: Patrolling Task
 
-The goal of this exercise is to program a robot to traverse a list of waypoints and perform specific actions upon reaching each waypoint.
+The goal of this exercise is to program a robot to traverse a list of waypoints and perform specific actions upon reaching each waypoint. In this case, we will use the gridmap representation.
 
 ## Waypoints
 
-As an example, a predefined list of four waypoints is available at: `~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_patrolling_behavior/config/patrolling_params.yaml`
+As an example, a predefined list of four waypoints is available at: `~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_patrolling_behavior/config/patrolling_params.yaml`
 
 
 ### Generating Custom Waypoints
@@ -75,7 +75,7 @@ You can implement this behavior in either C++ or Python, depending on your prefe
 
 ### Cpp Version
 
-To implement the patrolling behavior, edit the file located at: `~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_patrolling_behavior/src/easynav_patrolling_behavior/PatrollingNode.cpp`. 
+To implement the patrolling behavior, edit the file located at: `~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_patrolling_behavior/src/easynav_patrolling_behavior/PatrollingNode.cpp`. 
 
 Depending on your solution, you may need to modify the following:
 - The `DO_AT_WAYPOINT` state to define actions performed at each waypoint.
@@ -94,27 +94,28 @@ colcon build --packages-select easynav_patrolling_behavior
 ```bash
 source install/setup.bash
 ```
-3. Launch the Kobuki playground. We can use it without graphic interface:
+3. Launch the Summit playground:
 ```bash
-ros2 launch easynav_playground_kobuki playground_kobuki.launch.py gui:=false
+ros2 launch easynav_playground_summit playground_summit.launch.py
 ```
 
-4. Start RViz (use simulation time):
+4. Start EasyNav with the workshop params:
 ```bash
-ros2 run rviz2 rviz2 -d ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
+ros2 run easynav_system system_main --ros-args --params-file ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/config/gridmap_workshop.params.yaml 
 ```
 
-5. Start EasyNav with the workshop params:
+5. Start RViz (use simulation time):
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/exercises/easynav/1.basic_config/costmap_workshop.params.yaml 
+ros2 run rviz2 rviz2 -d ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/rviz/gridmap.rviz 
 ```
+
 6. Run the patrolling node with the specified parameters:
 ```bash
-ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_patrolling_behavior/config/patrolling_params.yaml
+ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_patrolling_behavior/config/patrolling_params.yaml
 ```
     
 ### Python version
-To implement the patrolling behavior, edit the file located at: `~/easynav_ws/src/easynav_workshop/easynav_patrolling_behavior_py/easynav_patrolling_behavior_py/patrolling_node.py`. 
+To implement the patrolling behavior, edit the file located at: `~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_patrolling_behavior_py/easynav_patrolling_behavior_py/patrolling_node.py`. 
 
 Depending on your solution, you may need to modify the following:
 - The `DO_AT_WAYPOINT` state to define actions performed at each waypoint.
@@ -133,20 +134,21 @@ colcon build --packages-select easynav_patrolling_behavior_py
 ```bash
 source install/setup.bash
 ```
-3. Launch the Kobuki playground. We can use it without graphic interface:
+3. Launch the Summit playground:
 ```bash
-ros2 launch easynav_playground_kobuki playground_kobuki.launch.py gui:=false
+ros2 launch easynav_playground_summit playground_summit.launch.py
 ```
 
-4. Start RViz (use simulation time):
+4. Start EasyNav with the workshop params:
 ```bash
-ros2 run rviz2 rviz2 -d ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
+ros2 run easynav_system system_main --ros-args --params-file ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/config/gridmap_workshop.params.yaml 
 ```
 
-5. Start EasyNav with the workshop params:
+5. Start RViz (use simulation time):
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/exercises/easynav/1.basic_config/costmap_workshop.params.yaml 
+ros2 run rviz2 rviz2 -d ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/rviz/gridmap.rviz 
 ```
+
 6. Run the patrolling launcher using the desired parameters:
 ```bash
 ros2 launch easynav_patrolling_behavior_py patrolling.launch.py 
@@ -155,6 +157,3 @@ ros2 launch easynav_patrolling_behavior_py patrolling.launch.py
 ### Troubleshooting
 - If you encounter issues with the **patrolling** module in Python, you may need to install an older version of NumPy:`pip install "numpy<2"`
 - Occasionally, when starting navigation, the system may get stuck because the goal is not received, yet it remains in a state that prevents sending a new one. If this happens, terminate both the system and patrolling processes, then run them again.
-
-## Solutions
-In the solution folder of this exercise folder you have some proposed approaches for both versions.

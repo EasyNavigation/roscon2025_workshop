@@ -57,12 +57,13 @@ private:
   bool initialized_ {false};
   size_t send_retries_ {0};
   const size_t max_retries_ {3};
+  uint last_control_type_ {0};
 
   std::string frame_id_;
   nav_msgs::msg::Goals goals_;
   GoalManagerClient::SharedPtr gm_client_;
   rclcpp::Time pause_start_time_;
-  rclcpp::Duration pause_duration_ = rclcpp::Duration::from_seconds(5.0);
+  rclcpp::Duration pause_duration_ = rclcpp::Duration::from_seconds(2.0);
   std::size_t current_goal_index_{0};
   rclcpp::TimerBase::SharedPtr timer_;
 };

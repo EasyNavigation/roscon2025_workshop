@@ -3,9 +3,7 @@ planner_node:
     use_sim_time: true
     planner_types: [workshop_planner]
     workshop_planner:
-      # freq: 0.5
       plugin: easynav_workshop_planner/WorkshopPlanner
-      path_radius: 0.7
       path_wp: 13
 
 controller_node:

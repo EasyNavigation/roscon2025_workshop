@@ -1,0 +1,115 @@
+controller_node:
+  ros__parameters:
+    use_sim_time: true
+    controller_types: [simple]
+    simple:
+      rt_freq: 30.0
+      plugin: easynav_simple_controller/SimpleController
+      max_linear_speed: 0.6
+      max_angular_speed: 0.6
+      max_linear_acc: 1.0
+      max_angular_acc: 0.5
+      look_ahead_dist: 1.5
+      tolerance_dist: 1.5
+      k_rot: 0.15
+      final_goal_angle_tolerance: 1.5
+      linear_kp: 0.9
+      linear_ki: 0.0
+      linear_kd: 0.08
+      angular_kp: 0.5
+      angular_ki: 0.0
+      angular_kd: 0.25
+
+localizer_node:
+  ros__parameters:
+    use_sim_time: true
+    localizer_types: [lidarslam]
+    lidarslam:
+      freq: 5.0
+      rt_freq: 20.0
+      plugin: easynav_lidarslam_localizer/LidarSlamLocalizer
+      input_cloud: /front_laser/points
+      imu: /imu/data
+
+maps_manager_node:
+  ros__parameters:
+    use_sim_time: true
+    map_types: [gridmap]
+    gridmap:
+      freq: 10.0
+      plugin: easynav_gridmap_maps_manager/GridmapMapsManager
+      package: easynav_workshop_testcase
+      map_path_file: maps/pool.yaml
+
+planner_node:
+  ros__parameters:
+    use_sim_time: true
+    planner_types: [astar]
+    astar:
+      plugin: easynav_gridmap_astar_planner/GridMapAStarPlanner
+      max_allowed_slope_deg: 20.0
+
+sensors_node:
+  ros__parameters:
+    use_sim_time: true
+    forget_time: 0.5
+    sensors: [laser1]
+    perception_default_frame: odom
+    laser1:
+      topic: /front_laser/points
+      type: sensor_msgs/msg/PointCloud2
+      group: points
+
+system_node:
+  ros__parameters:
+    use_sim_time: true
+    position_tolerance: 1.5
+    angle_tolerance: 1.5
+
+# LidarSLAM parameters (used internally by the localizer plugin)
+scan_matcher:
+  ros__parameters:
+    use_sim_time: True
+    global_frame_id: "map"
+    robot_frame_id: "base_link"
+    odom_frame_id: "odom"
+    registration_method: "NDT"
+    ndt_resolution: 2.0
+    ndt_num_threads: 2
+    gicp_corr_dist_threshold: 5.0
+    trans_for_mapupdate: 1.5
+    vg_size_for_input: 0.5
+    vg_size_for_map: 0.2
+    use_min_max_filter: true
+    scan_min_range: 1.0
+    scan_max_range: 200.0
+    scan_period: 0.2
+    map_publish_period: 15.0
+    num_targeted_cloud: 20
+    set_initial_pose: true
+    initial_pose_x: 0.0
+    initial_pose_y: 0.0
+    initial_pose_z: 0.0
+    initial_pose_qx: 0.0
+    initial_pose_qy: 0.0
+    initial_pose_qz: 0.0
+    initial_pose_qw: 1.0
+    use_imu: false
+    use_odom: true
+    debug_flag: false
+
+graph_based_slam:
+  ros__parameters:
+    use_sim_time: True
+    registration_method: "NDT"
+    ndt_resolution: 1.0
+    ndt_num_threads: 2
+    voxel_leaf_size: 0.2
+    loop_detection_period: 3000
+    threshold_loop_closure_score: 0.7
+    distance_loop_closure: 100.0
+    range_of_searching_loop_closure: 20.0
+    search_submap_num: 2
+    num_adjacent_pose_cnstraints: 5
+    use_save_map_in_loop: true
+    debug_flag: true

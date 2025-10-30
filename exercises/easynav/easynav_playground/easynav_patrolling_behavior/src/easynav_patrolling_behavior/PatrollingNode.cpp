@@ -28,141 +28,168 @@
 namespace easynav
 {
 
-    using namespace std::chrono_literals;
+  using namespace std::chrono_literals;
 
-    PatrollingNode::PatrollingNode(const rclcpp::NodeOptions &options)
-        : Node("patrolling_node", options)
+  PatrollingNode::PatrollingNode(const rclcpp::NodeOptions &options)
+      : Node("patrolling_node", options)
+  {
+    timer_ = create_timer(
+        100ms,
+        std::bind(&PatrollingNode::cycle, this));
+  }
+
+  void
+  PatrollingNode::initialize()
+  {
+    std::vector<std::string> waypoints;
+    declare_parameter("waypoints", waypoints);
+    get_parameter("waypoints", waypoints);
+
+    declare_parameter<std::string>("frame_id", "map");
+    get_parameter("frame_id", frame_id_);
+
+    goals_.header.frame_id = frame_id_;
+
+    for (const auto &wp : waypoints)
     {
-        timer_ = create_timer(
-            100ms,
-            std::bind(&PatrollingNode::cycle, this));
+      std::vector<double> wp_coord;
+      declare_parameter(wp, wp_coord);
+      get_parameter(wp, wp_coord);
+
+      if (wp_coord.size() != 3)
+      {
+        RCLCPP_ERROR(get_logger(), "Coordinates for wp [%s] have wrong size %zu",
+                     wp.c_str(), wp_coord.size());
+        continue;
+      }
+
+      geometry_msgs::msg::PoseStamped wp_pose;
+      wp_pose.header.frame_id = frame_id_;
+      wp_pose.pose.position.x = wp_coord[0];
+      wp_pose.pose.position.y = wp_coord[1];
+      wp_pose.pose.orientation = orientationAroundZAxis(wp_coord[2]);
+
+      goals_.goals.push_back(wp_pose);
     }
+  }
 
-    void
-    PatrollingNode::initialize()
+  void
+  PatrollingNode::cycle()
+  {
+    switch (state_)
     {
-        std::vector<std::string> waypoints;
-        declare_parameter("waypoints", waypoints);
-        get_parameter("waypoints", waypoints);
+    case PatrolState::IDLE:
+    {
+      if (!initialized_)
+      {
+        RCLCPP_INFO(get_logger(), "Initializing patrolling");
+        gm_client_ = GoalManagerClient::make_shared(shared_from_this());
+        initialize();
+        initialized_ = true;
+      }
 
-        declare_parameter<std::string>("frame_id", "map");
-        get_parameter("frame_id", frame_id_);
-
-        goals_.header.frame_id = frame_id_;
-        
-        for (const auto &wp : waypoints)
-        {
-            std::vector<double> wp_coord;
-            declare_parameter(wp, wp_coord);
-            get_parameter(wp, wp_coord);
-
-            if (wp_coord.size() != 3)
-            {
-                RCLCPP_ERROR(get_logger(), "Coordinates for wp [%s] have wrong size %zu",
-                             wp.c_str(), wp_coord.size());
-                continue;
-            }
-
-            geometry_msgs::msg::PoseStamped wp_pose;
-            wp_pose.header.frame_id = frame_id_;
-            wp_pose.pose.position.x = wp_coord[0];
-            wp_pose.pose.position.y = wp_coord[1];
-            wp_pose.pose.orientation = orientationAroundZAxis(wp_coord[2]);
-
-            goals_.goals.push_back(wp_pose);
-        }
+      nav_msgs::msg::Goals single_goal;
+      single_goal.header = goals_.header;
+      single_goal.goals.push_back(goals_.goals[current_goal_index_]);
+      // while (gm_client_->get_state() != GoalManagerClient::State::IDLE)
+      // {
+      //   gm_client_->reset(); // Ensure the client is idle before sending new goals
+      // }
+      gm_client_->send_goals(single_goal);
+      RCLCPP_INFO(get_logger(), "Goals sent");
+      state_ = PatrolState::PATROLLING;
     }
-    nav_msgs::msg::Goals
-    PatrollingNode::build_current_goal()
+    break;
+
+    case PatrolState::PATROLLING:
     {
-        nav_msgs::msg::Goals single_goal;
-        single_goal.header = goals_.header;
-        single_goal.goals.push_back(goals_.goals[current_goal_index_]);
-        return single_goal;
-    }
 
-    void
-    PatrollingNode::cycle()
-    {
-        switch (state_)
-        {
-        case PatrolState::IDLE:
-        {
-            if (!initialized_)
+      auto nav_state = gm_client_->get_state();
+      switch (nav_state)
+      {
+      case GoalManagerClient::State::SENT_GOAL:
+          last_control_type_ = gm_client_->get_last_control().type;
+
+          if (last_control_type_ == easynav_interfaces::msg::NavigationControl::REQUEST)
+          {
+            if (send_retries_ < max_retries_)
             {
-                RCLCPP_INFO(get_logger(), "Initializing patrolling");
-                gm_client_ = GoalManagerClient::make_shared(shared_from_this());
-                initialize();
-                initialized_ = true;
+              send_retries_++;
+              RCLCPP_INFO(get_logger(), "Waiting for ACCEPT... attempt %zu/%zu", send_retries_, max_retries_);
             }
-            RCLCPP_INFO(get_logger(), "Sending goals to waypoint %zu", current_goal_index_ + 1);
-            gm_client_->send_goals(build_current_goal());
-            state_ = PatrolState::PATROLLING;
-        }
-        break;
-        
-        case PatrolState::PATROLLING:
-        {
-            auto nav_state = gm_client_->get_state();
-            switch (nav_state)
+            else
             {
-            case GoalManagerClient::State::NAVIGATION_REJECTED:
-            case GoalManagerClient::State::NAVIGATION_FAILED:
-            case GoalManagerClient::State::NAVIGATION_CANCELLED:
-            case GoalManagerClient::State::ERROR:
-                RCLCPP_ERROR(get_logger(), "Navigation finished with error %s",
-                             gm_client_->get_result().status_message.c_str());
-                state_ = PatrolState::ERROR;
-                break;
-
-            case GoalManagerClient::State::SENT_GOAL:
-                if (send_retries_ < max_retries_)
-                {
-                    send_retries_++; // Waiting for ACCEPT
-                }
-                else
-                {
-                    send_retries_ = 0;
-                    state_ = PatrolState::IDLE; // No accept, retry sending goal
-                }
-                break;
-
-            case GoalManagerClient::State::NAVIGATION_FINISHED:
-                RCLCPP_INFO(get_logger(), "Navigation succesfully finished with message %s",
-                            gm_client_->get_result().status_message.c_str());
-                
-                state_ = PatrolState::DO_AT_WAYPOINT;
-                break;
-            case GoalManagerClient::State::ACCEPTED_AND_NAVIGATING:
-                break;
-            default:
-                break;
+              RCLCPP_WARN(get_logger(), "No ACCEPT received after %zu attempts, resending goal", max_retries_);
+              send_retries_ = 0;
+              state_ = PatrolState::IDLE;
             }
-        }
+          }
+          else if (last_control_type_ == easynav_interfaces::msg::NavigationControl::ACCEPT)
+          {
+            send_retries_ = 0;
+          }
         break;
 
-        case PatrolState::DO_AT_WAYPOINT:
-            /// TODO:
-            // Implement actions at waypoint before proceeding to the next one
-            // You could add a wait time emulating perform specific tasks here
-            // You could log data, spin the robot in place, etc.
-            // Remember to transition to the next IDLE state after completing intermediate actions
-            // or to the finished state if all waypoints have been visited
-            // and increment the current_goal_index_ accordingly
-            break;
+      case GoalManagerClient::State::NAVIGATION_REJECTED:
+      case GoalManagerClient::State::NAVIGATION_FAILED:
+      case GoalManagerClient::State::NAVIGATION_CANCELLED:
+      case GoalManagerClient::State::ERROR:
+        RCLCPP_ERROR(get_logger(), "Navigation finished with error %s",
+                     gm_client_->get_result().status_message.c_str());
+        state_ = PatrolState::ERROR;
+        break;
+      case GoalManagerClient::State::NAVIGATION_FINISHED:
+        RCLCPP_INFO(get_logger(), "Navigation succesfully finished with message %s",
+                    gm_client_->get_result().status_message.c_str());
 
-        case PatrolState::FINISHED:
-            RCLCPP_INFO(get_logger(), "Reset navigation");
-            current_goal_index_ = 0;
-            state_ = PatrolState::IDLE;
-            if (gm_client_->get_state() != GoalManagerClient::State::IDLE)
-            {
-                gm_client_->reset();
-            }
-            break;
-        case PatrolState::ERROR:
-            break;
-        }
+        pause_start_time_ = now();
+        RCLCPP_INFO(get_logger(), "Waiting time started at waypoint %zu", current_goal_index_ + 1);
+
+        state_ = PatrolState::DO_AT_WAYPOINT;
+        break;
+      case GoalManagerClient::State::ACCEPTED_AND_NAVIGATING:
+        break;
+      default:
+        break;
+      }
     }
+    break;
+
+    case PatrolState::DO_AT_WAYPOINT:
+      // DONE: Workshop task
+      if (now() - pause_start_time_ >= pause_duration_)
+      {
+        RCLCPP_INFO(get_logger(), "Waiting time ended at waypoint %zu", current_goal_index_ + 1);
+
+        // advance to next waypoint
+        ++current_goal_index_;
+        if (current_goal_index_ < goals_.goals.size())
+        {
+          RCLCPP_INFO(get_logger(), "Navigating to waypoint %zu", current_goal_index_ + 1);
+          gm_client_->reset();
+          state_ = PatrolState::IDLE;
+        }
+        else
+        {
+          RCLCPP_INFO(get_logger(), "All waypoints completed");
+          state_ = PatrolState::FINISHED;
+        }
+      }
+      // END DONE: Workshop task
+      break;
+
+    case PatrolState::FINISHED:
+      RCLCPP_INFO(get_logger(), "Reset navigation");
+      current_goal_index_ = 0;
+      state_ = PatrolState::IDLE;
+      if (gm_client_->get_state() != GoalManagerClient::State::IDLE)
+      {
+        gm_client_->reset();
+      }
+      break;
+    case PatrolState::ERROR:
+      break;
+    }
+  }
 
 } // namespace easynav

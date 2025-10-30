@@ -36,7 +36,7 @@ namespace easynav
   struct PathInfo
   {
     geometry_msgs::msg::Point origin;
-    double radius;
+    geometry_msgs::msg::Point goal;
     int num_waypoints;
   };
 
@@ -46,16 +46,15 @@ namespace easynav
     explicit WorkshopPlanner();
     virtual std::expected<void, std::string> on_initialize() override;
     void update(NavState &nav_state) override;
-    nav_msgs::msg::Path create_circular_path(
-        const nav_msgs::msg::Odometry &robot_pose,
-        double radius,
-        int num_waypoints,
+
+    nav_msgs::msg::Path create_linear_path(
+        const geometry_msgs::msg::Pose &robot_pose,
+        const geometry_msgs::msg::Pose &goal_pose,
         const std::string &frame_id);
 
   protected:
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
     nav_msgs::msg::Path current_path_;
-    double path_radius_;
     int path_wp_;
   };
 

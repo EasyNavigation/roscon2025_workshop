@@ -36,10 +36,11 @@ namespace easynav
         [](const PathInfo &value)
         {
           std::ostringstream oss;
-          oss << "Generated circular path:\n"
+          oss << "Generated linear path:\n"
               << "  Origin: (" << std::fixed << std::setprecision(2)
               << value.origin.x << ", " << value.origin.y << ", " << value.origin.z << ")\n"
-              << "  Radius: " << std::fixed << std::setprecision(2) << value.radius << " m\n"
+              << "  Goal: (" << std::fixed << std::setprecision(2)
+              << value.goal.x << ", " << value.goal.y << ", " << value.goal.z << ")\n"
               << "  Waypoints: " << value.num_waypoints;
           return oss.str();
         });
@@ -51,10 +52,8 @@ namespace easynav
     auto node = get_node();
     const auto &plugin_name = get_plugin_name();
 
-    node->declare_parameter<double>(plugin_name + ".path_radius", 0.5);
     node->declare_parameter<int>(plugin_name + ".path_wp", 16);
 
-    node->get_parameter(plugin_name + ".path_radius", path_radius_);
     node->get_parameter(plugin_name + ".path_wp", path_wp_);
 
     path_pub_ = get_node()->create_publisher<nav_msgs::msg::Path>(
@@ -64,68 +63,71 @@ namespace easynav
   }
 
   nav_msgs::msg::Path
-  WorkshopPlanner::create_circular_path(
-    const nav_msgs::msg::Odometry &robot_pose,
-    double radius,
-    int num_waypoints,
-    const std::string &frame_id)
+  WorkshopPlanner::create_linear_path(
+      const geometry_msgs::msg::Pose &robot_pose,
+      const geometry_msgs::msg::Pose &goal_pose,
+      const std::string &frame_id)
   {
     nav_msgs::msg::Path path;
     path.header.frame_id = frame_id;
     path.header.stamp = get_node()->now();
 
-    // Extract current yaw from robot's quaternion
-    double robot_yaw = atan2(
-        2.0 * (robot_pose.pose.pose.orientation.w * robot_pose.pose.pose.orientation.z +
-               robot_pose.pose.pose.orientation.x * robot_pose.pose.pose.orientation.y),
-        1.0 - 2.0 * (robot_pose.pose.pose.orientation.y * robot_pose.pose.pose.orientation.y +
-                     robot_pose.pose.pose.orientation.z * robot_pose.pose.pose.orientation.z));
+    // Calculate the direction vector from robot to goal
+    double dx = goal_pose.position.x - robot_pose.position.x;
+    double dy = goal_pose.position.y - robot_pose.position.y;
+    double dz = goal_pose.position.z - robot_pose.position.z;
 
-    // Calculate circle center perpendicular to robot's heading (to the left)
-    // This places the robot ON the circle, not at the center
-    double center_x = robot_pose.pose.pose.position.x - radius * sin(robot_yaw);
-    double center_y = robot_pose.pose.pose.position.y + radius * cos(robot_yaw);
-
-    // Calculate the starting angle (where the robot currently is on the circle)
-    double start_angle = atan2(
-        robot_pose.pose.pose.position.y - center_y,
-        robot_pose.pose.pose.position.x - center_x);
-
-    // Generate waypoints along the circle
-    for (int i = 0; i < num_waypoints; ++i)
+    // Generate waypoints along the line
+    for (int i = 0; i < path_wp_; ++i)
     {
-      double angle = start_angle + (2.0 * M_PI * i / num_waypoints);
+      double t = static_cast<double>(i) / (path_wp_ - 1); // Interpolation factor [0, 1]
 
       geometry_msgs::msg::PoseStamped pose;
       pose.header.frame_id = frame_id;
       pose.header.stamp = path.header.stamp;
 
-      // Calculate position on circle (robot is ON the circle perimeter)
-      pose.pose.position.x = center_x + radius * cos(angle);
-      pose.pose.position.y = center_y + radius * sin(angle);
-      pose.pose.position.z = robot_pose.pose.pose.position.z;
+      // Linear interpolation of position
+      pose.pose.position.x = robot_pose.position.x + t * dx;
+      pose.pose.position.y = robot_pose.position.y + t * dy;
+      pose.pose.position.z = robot_pose.position.z + t * dz;
 
-      // Calculate orientation tangent to circle (perpendicular to radius)
-      double tangent_angle = angle + M_PI / 2.0;
+      // Calculate orientation pointing towards the goal
+      double yaw = std::atan2(dy, dx);
       pose.pose.orientation.x = 0.0;
       pose.pose.orientation.y = 0.0;
-      pose.pose.orientation.z = sin(tangent_angle / 2.0);
-      pose.pose.orientation.w = cos(tangent_angle / 2.0);
+      pose.pose.orientation.z = std::sin(yaw / 2.0);
+      pose.pose.orientation.w = std::cos(yaw / 2.0);
 
       path.poses.push_back(pose);
     }
 
     return path;
   }
-
   void
   WorkshopPlanner::update(NavState &nav_state)
   {
-    // TODO: Check if robot_pose is available in nav_state
-    // TODO: get robot_pose from nav_state (type nav_msgs::msg::Odometry)
-    nav_msgs::msg::Odometry robot_pose; // JUST A PLACEHOLDER, REPLACE IT
 
-    current_path_ = create_circular_path(robot_pose, path_radius_, path_wp_, "map");
+    if (!nav_state.has("goals") || !nav_state.has("robot_pose"))
+    {
+      RCLCPP_DEBUG(get_node()->get_logger(), "goals, robot_pose or map missing. Returning");
+      return;
+    }
+    const auto goals = nav_state.get<nav_msgs::msg::Goals>("goals");
+    if (goals.goals.empty())
+    {
+      RCLCPP_DEBUG(get_node()->get_logger(), "goals empty. Returning empty path");
+      current_path_.poses.clear();
+      nav_state.set("path", current_path_);
+      return;
+    }
+    const auto &robot_pose = nav_state.get<nav_msgs::msg::Odometry>("robot_pose");
+    const auto &goal_pose = goals.goals.front();
+
+    // Create linear path from robot to goal
+    current_path_ = create_linear_path(
+        robot_pose.pose.pose,
+        goal_pose.pose,
+        "map");
 
     // Publish the path for visualization
     if (path_pub_)
@@ -133,11 +135,17 @@ namespace easynav
       path_pub_->publish(current_path_);
     }
 
-    // TODO: Create and store PathInfo struct 
-    // TODO: Store path info type in nav_state
-    // TODO: Store current_path_ in nav_state
+    // Store path in nav_state
+    nav_state.set("path", current_path_);
 
-    // Create a temporary NavState to use the debug printer for debugging without other information
+    // Create and store PathInfo
+    PathInfo path_info;
+    path_info.origin = robot_pose.pose.pose.position;
+    path_info.goal = goal_pose.pose.position;
+    path_info.num_waypoints = path_wp_;
+    nav_state.set("path_info", path_info);
+
+    // Create a temporary NavState to use the debug printer
     NavState temp_state;
     if (nav_state.has("path_info"))
     {
