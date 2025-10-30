@@ -3,6 +3,6 @@ project(easynav_workshop_testcase)
 
 find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY maps rviz DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY maps/ rviz/ config/ DESTINATION share/${PROJECT_NAME})
 
 ament_package()

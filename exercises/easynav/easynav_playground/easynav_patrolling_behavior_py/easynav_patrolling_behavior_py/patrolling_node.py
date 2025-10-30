@@ -55,7 +55,7 @@ class PatrollingNode(Node):
 
         wp_names = self.get_parameter('waypoints').get_parameter_value().string_array_value
        
-        self.pause_duration = rclpy.duration.Duration(seconds=5.0)
+        self.pause_duration = rclpy.duration.Duration(seconds=2.0)
         self.pause_start_time = 0
         self._goals = Goals()
         self._goals.header.frame_id = self.frame_id
@@ -95,7 +95,7 @@ class PatrollingNode(Node):
         self._state = PatrolState.IDLE
         self._max_retries = 3
 
-    def _build_current_goal(self):
+    def build_current_goal(self):
         goal = Goals()
         goal.header = self._goals.header
         goal.goals.append(self._goals.goals[self.current_goal_index])
@@ -104,22 +104,26 @@ class PatrollingNode(Node):
     def _cycle(self):
         match self._state:
             case PatrolState.IDLE:
-                self._gm.send_goals(self._build_current_goal())
+                self._gm.send_goals(self.build_current_goal())
                 self._send_retries = 0
                 self.get_logger().info(f'Sending goal to waypoint {self.current_goal_index + 1}')
                 self._state = PatrolState.PATROLLING
 
             case PatrolState.PATROLLING:
                 nav_state = self._gm.get_state()
+                current_type = self._gm.get_last_control().type
 
                 if nav_state == ClientState.SENT_GOAL:
-                    if self._send_retries < self._max_retries: # Wait for ACCEPT
-                        self._send_retries += 1
-                        return
-                    else: # No accept after retries, send goal again
+                    if current_type == 0:  # REQUEST
+                        if self._send_retries < self._max_retries:
+                            self._send_retries += 1
+                            self.get_logger().info(f"Waiting for ACCEPT... attempt {self._send_retries}/{self._max_retries}")
+                        else:
+                            self.get_logger().warn(f"No ACCEPT received after {self._max_retries} attempts, resending goal")
+                            self._send_retries = 0
+                            self._state = PatrolState.IDLE
+                    elif current_type == 1:  # ACCEPT
                         self._send_retries = 0
-                        self._state = PatrolState.IDLE
-                        return
                 elif (
                     nav_state == ClientState.NAVIGATION_REJECTED or
                     nav_state == ClientState.NAVIGATION_FAILED or
@@ -135,6 +139,8 @@ class PatrollingNode(Node):
                     result = self._gm.get_result()
                     self.get_logger().info(
                         f'Navigation succesfully finished with message {result.status_message}')
+                    self.pause_start_time = self.get_clock().now()
+                    self.get_logger().info(f"Waiting time started at waypoint {self.current_goal_index + 1}")
                     self._state = PatrolState.DO_AT_WAYPOINT
 
                 elif nav_state == ClientState.ACCEPTED_AND_NAVIGATING:
@@ -144,14 +150,17 @@ class PatrollingNode(Node):
                     pass
 
             case PatrolState.DO_AT_WAYPOINT:
-                #    TODO:
-                #    Implement actions at waypoint before proceeding to the next one
-                #    You could add a wait time emulating perform specific tasks here
-                #    You could log data, spin the robot in place, etc.
-                #    Remember to transition to the next IDLE state after completing intermediate actions
-                #    or to the finished state if all waypoints have been visited
-                #    and increment the current_goal_index_ accordingly
-                    
+                if self.get_clock().now() - self.pause_start_time >= self.pause_duration:
+                    self.get_logger().info(f"Waiting time ended at waypoint {self.current_goal_index + 1}")
+
+                    # Advance to the next waypoint
+                    self.current_goal_index += 1
+                    if self.current_goal_index < len(self._goals.goals):
+                        self._gm.reset()
+                        self._state = PatrolState.IDLE
+                    else:
+                        self.get_logger().info("All waypoints completed")
+                        self._state = PatrolState.FINISHED                 
 
             case PatrolState.FINISHED:
                 self.get_logger().info('Reset navigation')

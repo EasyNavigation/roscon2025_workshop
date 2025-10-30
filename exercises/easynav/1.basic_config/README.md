@@ -101,7 +101,7 @@ ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_worksh
 
 4. Start RViz (use simulation time):
 ```bash
-ros2 run rviz2 rviz2 -d ~/roscon2025_workshop/workshop_ws/src/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
+ros2 run rviz2 rviz2 -d ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
 ```
 
 In RViz, use the "2D Nav Goal" tool (toolbar button) to set a goal: click to place the position and drag to set the yaw. The planner will generate a path and the controller should start moving the robot towards the goal.
@@ -125,6 +125,50 @@ Similar to the previous exercise in **Nav2**, we can adjust parameters such as t
 Let's increase the `inflation_radius` parameter and observe how the obstacles become more inflated, resulting in the robot maintaining a greater safety distance from them.
 
 ![inflation](img/inflation.png)
+
+## EasyNav tools
+
+EasyNav includes a Terminal User Interface (TUI) and a small CLI that help monitor and inspect the running navigation system without a GUI. This exercise shows how to use them to monitor state, inspect topics, and list available plugins.
+
+### Terminal User Interface (TUI)
+
+The TUI displays key diagnostic information and performance metrics directly in the terminal. It is useful for debugging and profiling when you don't want to use RViz. Start it while the system is running:
+
+```bash
+ros2 run easynav_tools tui
+```
+
+The TUI has five main panels:
+- **Navigation Control**: current navigation mode (FEEDBACK, ACTIVE), robot pose, progress and remaining distance.
+- **Goal Info**: active goal details, tolerances and goal list.
+- **Twist**: live linear and angular velocity commands published by the controller.
+- **NavState**: internal blackboard entries (robot_pose, cmd_vel, active map, navigation_state).
+- **Time stats**: execution time and update frequency per component (localizer, planner, controller, maps manager, etc.).
+
+Use the TUI while issuing a goal in RViz to watch how the system's state evolves in real time.
+
+![tui](img/tui.png)
+
+### Command-Line Interface (CLI)
+
+If you only need one specific view, the CLI exposes individual boards as commands. Run the CLI and specify the board you want:
+
+```bash
+ros2 easynav <board>
+# where <board> is one of: goal_info | nav_state | twist | navigation_control | timestat
+```
+
+Example: show the current goal info
+```bash
+ros2 easynav goal_info
+```
+
+The CLI can also list available plugins for your current configuration:
+
+```bash
+ros2 easynav plugins
+```
+![plugins](img/plugins.png)
 
 ## Troubleshooting
 
