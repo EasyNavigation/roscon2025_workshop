@@ -2,7 +2,7 @@
 
 1. Launch the simulation environment with Kobuki:
 ```bash
-ros2 launch nav2_playground playground_kobuki.launch.py
+ros2 launch easynav_playground_kobuki playground_kobuki.launch.py lidar_range:=30.0
 ```
 
 2. In another terminal, launch slam_toolbox to generate the map:
@@ -29,6 +29,6 @@ ros2 service call /slam_toolbox/save_map slam_toolbox/srv/SaveMap "name:
 
 Use the slam_toolbox panel in RViz to save the map:
 
-![Save map with slam_toolbox GUI](../../images/rviz_save_map.png)
+![Save map with slam_toolbox GUI](../../../images/rviz_save_map.png)
 
 

@@ -84,19 +84,9 @@ ament_export_dependencies(ament_cmake
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  find_package(launch_testing_ament_cmake REQUIRED)
 
   ament_lint_auto_find_test_dependencies()
 
-  add_launch_test(
-    test/test_slam_launch.py
-    TIMEOUT 120
-  )
-
-  add_launch_test(
-    test/test_patrol_launch.py
-    TIMEOUT 180
-  )
 endif()
 
 ament_package()

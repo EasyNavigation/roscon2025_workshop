@@ -43,11 +43,12 @@ def generate_test_description():
     2. slam_launch.py (SLAM toolbox)
     """
     nav2_playground_dir = get_package_share_directory('nav2_playground')
+    kobuki_playground_dir = get_package_share_directory('easynav_playground_kobuki')
 
     # Launch playground (Gazebo + Kobuki)
     playground_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(nav2_playground_dir, 'launch', 'playground_kobuki.launch.py')
+            os.path.join(kobuki_playground_dir, 'launch', 'playground_kobuki.launch.py')
         ),
         launch_arguments={'gui': 'false'}.items()  # Headless for faster testing
     )

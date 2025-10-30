@@ -65,6 +65,74 @@ When the robot reaches a waypoint, it should do something! Here are some ideas:
 - Publish a message to another node
 - Call a service
 
+**Example Solution 1: Print a Message**
+
+**C++:**
+```cpp
+case PatrolState::DO_SOMETHING_AT_WAYPOINT:
+  {
+    RCLCPP_INFO(this->get_logger(), "Reached waypoint %zu!", current_waypoint_index_);
+    
+    // Move to next waypoint
+    current_waypoint_index_++;
+    state_ = PatrolState::SENDING_GOAL;
+    break;
+  }
+```
+
+**Python:**
+```python
+elif self.state == PatrolState.DO_SOMETHING_AT_WAYPOINT:
+    self.get_logger().info(f'Reached waypoint {self.current_waypoint_index}!')
+    
+    # Move to next waypoint
+    self.current_waypoint_index += 1
+    self.state = PatrolState.SENDING_GOAL
+```
+
+**Example Solution 2: Wait at Waypoint**
+
+**C++:**
+```cpp
+case PatrolState::DO_SOMETHING_AT_WAYPOINT:
+  {
+    if (!waiting_) {
+      RCLCPP_INFO(this->get_logger(), "Waiting at waypoint %zu for 3 seconds...", current_waypoint_index_);
+      wait_start_time_ = this->now();
+      waiting_ = true;
+    }
+    
+    // Check if 3 seconds have passed
+    if ((this->now() - wait_start_time_).seconds() >= 3.0) {
+      RCLCPP_INFO(this->get_logger(), "Wait complete! Moving to next waypoint.");
+      waiting_ = false;
+      current_waypoint_index_++;
+      state_ = PatrolState::SENDING_GOAL;
+    }
+    break;
+  }
+```
+
+**Python:**
+```python
+elif self.state == PatrolState.DO_SOMETHING_AT_WAYPOINT:
+    if not self.waiting:
+        self.get_logger().info(f'Waiting at waypoint {self.current_waypoint_index} for 3 seconds...')
+        self.wait_start_time = self.get_clock().now()
+        self.waiting = True
+    
+    # Check if 3 seconds have passed
+    if (self.get_clock().now() - self.wait_start_time).nanoseconds / 1e9 >= 3.0:
+        self.get_logger().info('Wait complete! Moving to next waypoint.')
+        self.waiting = False
+        self.current_waypoint_index += 1
+        self.state = PatrolState.SENDING_GOAL
+```
+
+> **Note for Solution 2:** You'll need to add member variables to track the waiting state:
+> - C++: Add `bool waiting_ = false;` and `rclcpp::Time wait_start_time_;` to your class
+> - Python: Add `self.waiting = False` and `self.wait_start_time = None` in `__init__`
+
 #### Step 3: Build Your Implementation
 
 After implementing your solution, build the workspace:
@@ -79,10 +147,10 @@ source install/setup.bash
 
 1. Launch the simulation:
 ```bash
-ros2 launch nav2_playground playground_kobuki.launch.py
+ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 ```
 
-2. Launch the navigation stack with your map:
+2. In another terminal, launch the navigation stack with your map:
 ```bash
 ros2 launch nav2_playground navigation_launch.py map:=<path-to-your-map.yaml>
 ```

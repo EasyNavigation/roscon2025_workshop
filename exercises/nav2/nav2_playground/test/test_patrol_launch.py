@@ -46,6 +46,7 @@ def generate_test_description():
     3. patrol_launch.py (Patrolling node - launched after a delay for navigation to be ready)
     """
     nav2_playground_dir = get_package_share_directory('nav2_playground')
+    kobuki_playground_dir = get_package_share_directory('easynav_playground_kobuki')
 
     # Get test parameters from global config
     use_python = _test_config['use_python']
@@ -54,7 +55,7 @@ def generate_test_description():
     # Launch playground (Gazebo + Kobuki)
     playground_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(nav2_playground_dir, 'launch', 'playground_kobuki.launch.py')
+            os.path.join(kobuki_playground_dir, 'launch', 'playground_kobuki.launch.py')
         ),
         launch_arguments={'gui': 'false'}.items()  # Headless for faster testing
     )
