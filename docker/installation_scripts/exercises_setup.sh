@@ -12,6 +12,10 @@
 # Exercises
 # Set the ROS 2 workspace directory where EasyNavigation will be installed
 export ws_dir=~/workshop_ws
+
+# Set the branch you want to use
+BRANCH="ea"
+
 # Repository URL
 REPO_URL="https://github.com/EasyNavigation/roscon2025_workshop.git"
 
@@ -24,7 +28,7 @@ FOLDER="exercises"
 
 # Clone the repository without checking out files
 echo "Cloning repository..."
-git clone --no-checkout --depth 1 "$REPO_URL" "$TMP"
+git clone --no-checkout --depth 1 -b "$BRANCH" "$REPO_URL" "$TMP"
 
 # Navigate to the repository directory
 cd "$TMP" || exit 1
@@ -36,12 +40,21 @@ git sparse-checkout init --cone
 git sparse-checkout set "$FOLDER"
 
 # Checkout the main branch
-git checkout main
+git checkout $BRANCH
 
 # Move from TMP to DESTINATION
-mv "$TMP/$FOLDER" "$DESTINATION"
+if [ -d "$DESTINATION/$FOLDER" ]; then
+    echo "Removing existing $DESTINATION/$FOLDER"
+    rm -rf "$DESTINATION/$FOLDER"
+fi
+
+mv "$TMP/$FOLDER" $DESTINATION
 
 echo "Exercises folder downloaded to $DESTINATION/$FOLDER"
+
+echo "Building exercises packages..."
+cd $ws_dir
+colcon build --symlink-install
 
 echo "====================================================="
 echo "                  EXERCISES INSTALLED                "
