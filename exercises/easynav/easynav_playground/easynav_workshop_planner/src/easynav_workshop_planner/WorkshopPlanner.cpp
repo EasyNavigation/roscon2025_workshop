@@ -36,7 +36,7 @@ namespace easynav
         [](const PathInfo &value)
         {
           std::ostringstream oss;
-          oss << "Generated circular path:\n"
+          oss << "Generated linear path:\n"
               << "  Origin: (" << std::fixed << std::setprecision(2)
               << value.origin.x << ", " << value.origin.y << ", " << value.origin.z << ")\n"
               << "  Goal: (" << std::fixed << std::setprecision(2)

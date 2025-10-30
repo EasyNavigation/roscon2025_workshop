@@ -94,20 +94,21 @@ colcon build --packages-select easynav_patrolling_behavior
 ```bash
 source install/setup.bash
 ```
-3. Launch the Summit playground. 
+3. Launch the Summit playground:
 ```bash
 ros2 launch easynav_playground_summit playground_summit.launch.py
 ```
 
-4. Start RViz (use simulation time):
+4. Start EasyNav with the workshop params:
+```bash
+ros2 run easynav_system system_main --ros-args --params-file ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/config/gridmap_workshop.params.yaml 
+```
+
+5. Start RViz (use simulation time):
 ```bash
 ros2 run rviz2 rviz2 -d ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/rviz/gridmap.rviz 
 ```
 
-5. Start EasyNav with the workshop params:
-```bash
-ros2 run easynav_system system_main --ros-args --params-file ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/config/gridmap_workshop.params.yaml 
-```
 6. Run the patrolling node with the specified parameters:
 ```bash
 ros2 run easynav_patrolling_behavior patrolling_main --ros-args --params-file ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_patrolling_behavior/config/patrolling_params.yaml
@@ -133,20 +134,21 @@ colcon build --packages-select easynav_patrolling_behavior_py
 ```bash
 source install/setup.bash
 ```
-3. Launch the Kobuki playground. We can use it without graphic interface:
+3. Launch the Summit playground:
 ```bash
-ros2 launch easynav_playground_kobuki playground_kobuki.launch.py gui:=false
+ros2 launch easynav_playground_summit playground_summit.launch.py
 ```
 
-4. Start RViz (use simulation time):
+4. Start EasyNav with the workshop params:
 ```bash
-ros2 run rviz2 rviz2 -d ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/rviz/costmap.rviz 
+ros2 run easynav_system system_main --ros-args --params-file ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/config/gridmap_workshop.params.yaml 
 ```
 
-5. Start EasyNav with the workshop params:
+5. Start RViz (use simulation time):
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/exercises/easynav/1.basic_config/costmap_workshop.params.yaml 
+ros2 run rviz2 rviz2 -d ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/rviz/gridmap.rviz 
 ```
+
 6. Run the patrolling launcher using the desired parameters:
 ```bash
 ros2 launch easynav_patrolling_behavior_py patrolling.launch.py 

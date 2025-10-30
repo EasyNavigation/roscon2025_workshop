@@ -96,7 +96,7 @@ ros2 launch easynav_playground_kobuki playground_kobuki.launch.py
 
 2. Start EasyNav with the workshop params (in a separate terminal):
 ```bash
-ros2 run easynav_system system_main --ros-args --params-file ~/roscon2025_workshop/exercises/easynav/1.basic_config/costmap_workshop.params.yaml 
+ros2 run easynav_system system_main --ros-args --params-file ~/workshop_ws/src/exercises/easynav/easynav_playground/easynav_workshop_testcase/config/costmap_workshop.params.yaml
 ```
 
 4. Start RViz (use simulation time):
