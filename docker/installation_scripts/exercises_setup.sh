@@ -14,7 +14,7 @@
 export ws_dir=~/workshop_ws
 
 # Set the branch you want to use
-BRANCH="ea"
+BRANCH="main"
 
 # Repository URL
 REPO_URL="https://github.com/EasyNavigation/roscon2025_workshop.git"
