@@ -27,11 +27,8 @@ Choose your preferred setup method:
 ## Option 1: Local installation (Linux only, Ubuntu 24.04)
 If you're using Ubuntu 24.04 and prefer to install dependencies without Docker, you can install [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/index.html), create a directory for the EasyNavigation environment and clone the repository and run the provided setup script to configure the simulator locally.
 ```sh
-mkdir ~/easynav_ws && cd ~/easynav_ws
 git clone https://github.com/EasyNavigation/roscon2025_workshop.git
-./roscon2025_workshop/docker/installation_scripts/easynavigation_setup.sh
-./roscon2025_workshop/docker/installation_scripts/nav2_setup.sh
-./roscon2025_workshop/docker/installation_scripts/exercises_setup.sh
+./roscon2025_workshop/docker/installation_scripts/workshop_all.sh
 ```
 
 ---
