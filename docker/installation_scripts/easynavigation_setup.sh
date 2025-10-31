@@ -10,7 +10,7 @@
 # Institution: Universidad Rey Juan Carlos
 
 # Set the ROS 2 workspace directory where EasyNavigation will be installed
-export ws_dir=~/easynav_ws
+export ws_dir=~/workshop_ws
 
 # Update system packages to ensure we have the latest versions and security patches
 echo "Updating system packages..."
@@ -24,20 +24,20 @@ rosdep update
 
 # Clone the main EasyNavigation repositories
 echo "Cloning EasyNavigation repositories..."
-git clone -b jazzy https://github.com/EasyNavigation/EasyNavigation.git $ws_dir/src/EasyNavigation
-git clone -b jazzy https://github.com/EasyNavigation/NavMap.git $ws_dir/src/NavMap
-git clone -b jazzy https://github.com/EasyNavigation/easynav_plugins.git $ws_dir/src/easynav_plugins
+git clone -b jazzy https://github.com/EasyNavigation/EasyNavigation.git $ws_dir/src/easynav/EasyNavigation
+git clone -b jazzy https://github.com/EasyNavigation/NavMap.git $ws_dir/src/easynav/NavMap
+git clone -b jazzy https://github.com/EasyNavigation/easynav_plugins.git $ws_dir/src/easynav/easynav_plugins
 # Clone yaets dependency
-git clone -b jazzy-devel https://github.com/fmrico/yaets.git $ws_dir/src/yaets
+git clone -b jazzy-devel https://github.com/fmrico/yaets.git $ws_dir/src/easynav/yaets
 # --- Extra repositories used in the examples ---
-git clone -b rolling https://github.com/EasyNavigation/easynav_playground_kobuki.git $ws_dir/src/easynav_playground_kobuki
-git clone -b main https://github.com/EasyNavigation/easynav_indoor_testcase.git $ws_dir/src/easynav_indoor_testcase
-git clone -b rolling https://github.com/EasyNavigation/easynav_playground_summit.git $ws_dir/src/easynav_playground_summit
+git clone -b rolling https://github.com/EasyNavigation/easynav_playground_kobuki.git $ws_dir/src/easynav/easynav_playground_kobuki
+git clone -b main https://github.com/EasyNavigation/easynav_indoor_testcase.git $ws_dir/src/easynav/easynav_indoor_testcase
+git clone -b rolling https://github.com/EasyNavigation/easynav_playground_summit.git $ws_dir/src/easynav/easynav_playground_summit
 
 # Install third-party dependencies using vcs tool
 cd $ws_dir/src
-vcs import . < $ws_dir/src/easynav_playground_kobuki/thirdparty.repos
-vcs import . < $ws_dir/src/easynav_playground_summit/thirdparty.repos
+vcs import . < $ws_dir/src/easynav/easynav_playground_kobuki/thirdparty.repos
+vcs import . < $ws_dir/src/easynav/easynav_playground_summit/thirdparty.repos
 
 # Navigate to the ROS 2 workspace directory
 cd $ws_dir

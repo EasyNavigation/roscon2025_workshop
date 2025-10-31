@@ -22,12 +22,16 @@ REPO_URL="https://github.com/EasyNavigation/roscon2025_workshop.git"
 # Destination folder (change this to your preferred path)
 TMP="/tmp/workshop"
 DESTINATION="$ws_dir/src"
+if [ -d "$TMP" ]; then
+    echo "Removing existing $TMP"
+    rm -rf "$TMP"
+fi
 
 # Folder to download
 FOLDER="exercises"
 
 # Clone the repository without checking out files
-echo "Cloning repository..."
+echo "Cloning repository..."DESTINATION
 git clone --no-checkout --depth 1 -b "$BRANCH" "$REPO_URL" "$TMP"
 
 # Navigate to the repository directory
