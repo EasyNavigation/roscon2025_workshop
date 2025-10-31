@@ -18,7 +18,16 @@ This guide helps developers and researchers quickly set up and test the EasyNavi
 
 ---
 # Installation
-Choose your preferred setup method:
+- If you have an NVIDIA card in your system and it is configured with the proper drivers, you can execute the following command to switch between the integrated graphics card and the NVIDIA GPU:
+```sh 
+sudo prime-select nvidia
+``` 
+
+- After running prime-select, you will need to restart your system for the changes to take effect:
+```sh 
+sudo reboot
+``` 
+Now, choose your preferred setup method:
 - **Option 1**: Local installation (Linux only, Ubuntu 24.04) - For advanced users who want direct system integration
 - **Option 2**: Docker environment (Recommended) - For easy testing and cross-platform compatibility
 ---
@@ -76,16 +85,6 @@ To enable GPU Acceleration (Linux + NVIDIA) usage inside Docker:
 cd ~/easynav_ws/roscon2025_workshop/docker/
 ./nvidia_install.sh
 ```
-
-- If you have an NVIDIA card in your system and it is configured with the proper drivers, you can execute the following command to switch between the integrated graphics card and the NVIDIA GPU:
-```sh 
-sudo prime-select nvidia
-``` 
-
-- After running prime-select, you will need to restart your system for the changes to take effect:
-```sh 
-sudo reboot
-``` 
 
 #### 4. Download or build the Docker image
 There are two ways to get the Docker image:
