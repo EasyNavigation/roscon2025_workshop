@@ -33,6 +33,8 @@ git clone -b jazzy-devel https://github.com/fmrico/yaets.git $ws_dir/src/easynav
 git clone -b rolling https://github.com/EasyNavigation/easynav_playground_kobuki.git $ws_dir/src/easynav/easynav_playground_kobuki
 git clone -b main https://github.com/EasyNavigation/easynav_indoor_testcase.git $ws_dir/src/easynav/easynav_indoor_testcase
 git clone -b rolling https://github.com/EasyNavigation/easynav_playground_summit.git $ws_dir/src/easynav/easynav_playground_summit
+git clone -b jazzy --recursive https://github.com/EasyNavigation/easynav_lidarslam_ros2.git $ws_dir/src/easynav/easynav_lidarslam_ros2
+git clone -b jazzy https://github.com/EasyNavigation/easynav_gridmap_stack.git $ws_dir/src/easynav/easynav_gridmap_stack
 
 # Install third-party dependencies using vcs tool
 cd $ws_dir/src
