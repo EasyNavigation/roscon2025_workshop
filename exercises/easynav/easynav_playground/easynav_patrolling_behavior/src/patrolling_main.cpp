@@ -29,7 +29,7 @@ int main(int argc, char ** argv)
 
   auto patrolling_node = easynav::PatrollingNode::make_shared();
   rclcpp::spin(patrolling_node);
-  
+
   rclcpp::shutdown();
   return 0;
 }

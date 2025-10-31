@@ -33,30 +33,30 @@ namespace easynav
 {
 
   // Define a structure to hold path information
-  struct PathInfo
-  {
-    geometry_msgs::msg::Point origin;
-    geometry_msgs::msg::Point goal;
-    int num_waypoints;
-  };
+struct PathInfo
+{
+  geometry_msgs::msg::Point origin;
+  geometry_msgs::msg::Point goal;
+  int num_waypoints;
+};
 
-  class WorkshopPlanner : public PlannerMethodBase
-  {
-  public:
-    explicit WorkshopPlanner();
-    virtual std::expected<void, std::string> on_initialize() override;
-    void update(NavState &nav_state) override;
+class WorkshopPlanner : public PlannerMethodBase
+{
+public:
+  explicit WorkshopPlanner();
+  virtual std::expected<void, std::string> on_initialize() override;
+  void update(NavState & nav_state) override;
 
-    nav_msgs::msg::Path create_linear_path(
-        const geometry_msgs::msg::Pose &robot_pose,
-        const geometry_msgs::msg::Pose &goal_pose,
-        const std::string &frame_id);
+  nav_msgs::msg::Path create_linear_path(
+    const geometry_msgs::msg::Pose & robot_pose,
+    const geometry_msgs::msg::Pose & goal_pose,
+    const std::string & frame_id);
 
-  protected:
-    rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
-    nav_msgs::msg::Path current_path_;
-    int path_wp_;
-  };
+protected:
+  rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
+  nav_msgs::msg::Path current_path_;
+  int path_wp_;
+};
 
 } // namespace easynav
 
