@@ -1,4 +1,4 @@
-# Exercise 3: Using NavMap representation
+# Exercise 4: Using NavMap representation
 
 Into EasyNav project, there is a world representation where it is possible to navigate. This representation is called NavMap, and it is create to be easy to navigate and to be efficient in terms of memory and computational cost.
 

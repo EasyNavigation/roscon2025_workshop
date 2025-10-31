@@ -1,4 +1,4 @@
-# Exercise 4: Patrolling behavior
+# Exercise 3: Patrolling behavior
 
 The patrolling behavior is a simple example of commanding navigation goals programmatically. It allows a robot to automatically navigate through a series of predefined waypoints on a map. These waypoints are defined in a YAML configuration file. It relies on the Goal Manager Client available both for C++ ([GoalManagerClient.cpp](https://github.com/EasyNavigation/EasyNavigation/blob/jazzy/easynav_system/src/easynav_system/GoalManagerClient.cpp)) and Python ([goal_manager_client.py](https://github.com/EasyNavigation/EasyNavigation/blob/jazzy/easynav_support_py/easynav_goalmanager_py/goal_manager_client.py)).
 
