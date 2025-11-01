@@ -47,7 +47,7 @@ cd $ws_dir
 # Install all ROS 2 dependencies for the packages in the workspace
 # This ensures all required packages are available before compilation
 echo "Installing ROS 2 dependencies..."
-sudo apt install ros-jazzy-grid-map-rviz-plugin 
+sudo apt install ros-jazzy-grid-map-rviz-plugin -y
 rosdep install --from-paths src --ignore-src -r -y
 
 # Build all packages in the workspace using colcon
