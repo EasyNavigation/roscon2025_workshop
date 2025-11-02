@@ -1,18 +1,25 @@
 controller_node:
   ros__parameters:
     use_sim_time: true
-    controller_types: [dummy]
-    dummy:
-      rt_freq: 30.0 
-      plugin: easynav_controller/DummyController
-      cycle_time_nort: 0.01
-      cycle_time_rt: 0.001
+    controller_types: [mppi]
+    mppi:
+      plugin: easynav_mppi_controller/MPPIController
+      num_samples: 100
+      horizon_steps: 10	
+      dt:	0.1	
+      lambda:	0.1	
+      max_linear_velocity:	1.0	
+      max_angular_velocity:	1.0	
+      max_linear_acceleration:	0.5	
+      max_angular_acceleration:	1.0	
+      fov:	1.57	
+      safety_radius:	0.6	
 
 localizer_node:
   ros__parameters:
     use_sim_time: true
-    localizer_types: [dummy]
-    dummy:
+    localizer_types: [amcl]
+    amcl:
       rt_freq: 50.0
       freq: 5.0
       reseed_freq: 0.1
@@ -49,12 +56,10 @@ maps_manager_node:
 planner_node:
   ros__parameters:
     use_sim_time: true
-    planner_types: [dummy]
-    dummy:
-      freq: 1.0
-      plugin: easynav_planner/DummyPlanner
-      cycle_time_nort: 0.2
-      cycle_time_rt: 0.001
+    planner_types: [astar]
+    astar:
+      plugin: easynav_navmap_planner/AStarPlanner
+      max_allowed_slope_deg: 20.0
 
 sensors_node:
   ros__parameters:
@@ -76,5 +81,5 @@ system_node:
   ros__parameters:
     use_sim_time: true
     use_real_time: false
-    position_tolerance: 0.3
-    angle_tolerance: 0.15
+    position_tolerance: 1.0
+    angle_tolerance: 0.25
