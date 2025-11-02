@@ -127,27 +127,28 @@ This results in two FSMs running simultaneously:
 In this exercise, we simulate an inspection task using the DO_AT_WAYPOINT state. This state is entered after the Goal Manager Client completes navigation to the current waypoint. It pauses the robot at the waypoint for 3 seconds to simulate the inspection. After the pause, the system either advances to the next goal in the list or transitions to the FINISHED state if the current waypoint was the last one.
 
 ```cpp
-    case GoalManagerClient::State::NAVIGATION_FINISHED:
-            RCLCPP_INFO(get_logger(), "Navigation succesfully finished with message %s",
-                    gm_client_->get_result().status_message.c_str());
+case GoalManagerClient::State::NAVIGATION_FINISHED:
+    RCLCPP_INFO(get_logger(), "Navigation successfully finished with message %s",
+                gm_client_->get_result().status_message.c_str());
 
-            state_ = PatrolState::DO_AT_WAYPOINT;
-            break;
-    case PatrolState::DO_AT_WAYPOINT:
-      if (now() - pause_start_time_ >= pause_duration_) {
+    state_ = PatrolState::DO_AT_WAYPOINT;
+    break;
+
+case PatrolState::DO_AT_WAYPOINT:
+    if (now() - pause_start_time_ >= pause_duration_) {
         RCLCPP_INFO(get_logger(), "Waiting time ended at waypoint %zu", current_goal_index_ + 1);
 
         ++current_goal_index_;
         if (current_goal_index_ < goals_.goals.size()) {
-          RCLCPP_INFO(get_logger(), "Navigating to waypoint %zu", current_goal_index_ + 1);
-          gm_client_->reset();
-          state_ = PatrolState::IDLE;
+            RCLCPP_INFO(get_logger(), "Navigating to waypoint %zu", current_goal_index_ + 1);
+            gm_client_->reset();
+            state_ = PatrolState::IDLE;
         } else {
-          RCLCPP_INFO(get_logger(), "All waypoints completed");
-          state_ = PatrolState::FINISHED;
+            RCLCPP_INFO(get_logger(), "All waypoints completed");
+            state_ = PatrolState::FINISHED;
         }
-      }
-      break;
+    }
+    break;
 ```
 ## Configuring our environment
 
@@ -280,29 +281,6 @@ controller_node:
       angular_ki: 0.0
       angular_kd: 0.25
 ```
-
-### Configuring our visualization in RViz
-
-To properly visualize our configuration, follow these steps:
-
-1. Set the Fixed Frame
-   First, set the fixed frame to `map`.  
-   ![RViz map view](img/rviz-map.png)
-
-2. Add the GridMap Representation 
-   Click the **Add** button at the bottom of the left panel in RViz and select the **GridMap** display type.  
-   ![Add GridMap display](img/add-gridmap.png)
-
-3. Select the GridMap Topic
-   Set the topic to `/maps_manager_node/gridmap/map` and configure it with **transient local QoS**.  
-   ![GridMap topic QoS](img/gridmap-qos.png)
-
-4. Add the Path
-   Finally, add the path by selecting the `/planner/path` topic.  
-   ![Add planner path](img/add-path.png)
-
-Once these steps are completed, you can proceed to develop and test the patrolling task.
-
 ## Programming a Patrolling Task
 
 The goal of this exercise is to program a robot to traverse a list of waypoints and perform specific actions upon reaching each waypoint. In this case, we will use the gridmap representation.
@@ -409,6 +387,28 @@ ros2 run rviz2 rviz2 -d ~/workshop_ws/src/exercises/easynav/easynav_playground/e
 ```bash
 ros2 launch easynav_patrolling_behavior_py patrolling.launch.py 
 ```
+
+### Configuring our visualization in RViz
+
+To properly visualize our configuration, follow these steps:
+
+1. Set the Fixed Frame
+   First, set the fixed frame to `map`.  
+   ![RViz map view](img/rviz-map.png)
+
+2. Add the GridMap Representation 
+   Click the **Add** button at the bottom of the left panel in RViz and select the **GridMap** display type.  
+   ![Add GridMap display](img/add-gridmap.png)
+
+3. Select the GridMap Topic
+   Set the topic to `/maps_manager_node/gridmap/map` and configure it with **transient local QoS**.  
+   ![GridMap topic QoS](img/gridmap-qos.png)
+
+4. Add the Path
+   Finally, add the path by selecting the `/planner/path` topic.  
+   ![Add planner path](img/add-path.png)
+
+Once these steps are completed, we can proceed to our patrolling task.
 
 ### Troubleshooting
 - If you encounter issues with the **patrolling** module in Python while using Docker, you need to install an older version of NumPy:`pip install "numpy<2"`
