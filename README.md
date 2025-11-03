@@ -13,9 +13,8 @@ This guide helps developers and researchers quickly set up and test the EasyNavi
 
 ---
 # Surveys
-  - Before workshop: https://forms.office.com/e/CGbmjFx2tN
-  - After workshop: https://forms.office.com/e/VvB3wwBL76
-
+  - Before workshop: https://forms.office.com/e/zHrLbQnEcW
+  - After workshop: https://forms.office.com/e/zEHKFjjR2L
 ---
 # Installation
 - If you have an NVIDIA card in your system and it is configured with the proper drivers, you can execute the following command to switch between the integrated graphics card and the NVIDIA GPU:
