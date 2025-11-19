@@ -56,8 +56,9 @@ private:
 
   bool initialized_ {false};
   size_t send_retries_ {0};
-  const size_t max_retries_ {3};
+  const size_t max_retries_ {5};
   uint last_control_type_ {0};
+  GoalManagerClient::State last_nav_state_ {GoalManagerClient::State::IDLE};
 
   std::string frame_id_;
   nav_msgs::msg::Goals goals_;

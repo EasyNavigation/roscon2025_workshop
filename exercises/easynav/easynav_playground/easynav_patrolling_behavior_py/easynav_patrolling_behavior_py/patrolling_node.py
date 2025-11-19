@@ -93,7 +93,8 @@ class PatrollingNode(Node):
         self.get_logger().info('PatrollingNode started')
         self._send_retries = 0
         self._state = PatrolState.IDLE
-        self._max_retries = 3
+        self._max_retries = 5
+        self._last_nav_state = ClientState.IDLE
 
     def build_current_goal(self):
         goal = Goals()
@@ -106,24 +107,27 @@ class PatrollingNode(Node):
             case PatrolState.IDLE:
                 self._gm.send_goals(self.build_current_goal())
                 self._send_retries = 0
-                self.get_logger().info(f'Sending goal to waypoint {self.current_goal_index + 1}')
+                self.get_logger().info('Goals sent')
                 self._state = PatrolState.PATROLLING
 
             case PatrolState.PATROLLING:
                 nav_state = self._gm.get_state()
-                current_type = self._gm.get_last_control().type
+                
+                # Show navigating message on state transition to ACCEPTED_AND_NAVIGATING
+                if (nav_state == ClientState.ACCEPTED_AND_NAVIGATING and 
+                    self._last_nav_state != ClientState.ACCEPTED_AND_NAVIGATING):
+                    self.get_logger().info(f'Navigating to waypoint {self.current_goal_index + 1}')
+                self._last_nav_state = nav_state
 
                 if nav_state == ClientState.SENT_GOAL:
-                    if current_type == 0:  # REQUEST
-                        if self._send_retries < self._max_retries:
-                            self._send_retries += 1
-                            self.get_logger().info(f"Waiting for ACCEPT... attempt {self._send_retries}/{self._max_retries}")
-                        else:
-                            self.get_logger().warn(f"No ACCEPT received after {self._max_retries} attempts, resending goal")
-                            self._send_retries = 0
-                            self._state = PatrolState.IDLE
-                    elif current_type == 1:  # ACCEPT
+                    self._send_retries += 1
+                    if self._send_retries >= self._max_retries:
+                        self.get_logger().warn(f"No ACCEPT received after {self._max_retries} attempts, resending goal...")
                         self._send_retries = 0
+                        # Recreate client to reset to IDLE state
+                        self._gm = GoalManagerClient(node=self)
+                        self._last_nav_state = ClientState.IDLE
+                        self._state = PatrolState.IDLE
                 elif (
                     nav_state == ClientState.NAVIGATION_REJECTED or
                     nav_state == ClientState.NAVIGATION_FAILED or
