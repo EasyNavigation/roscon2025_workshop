@@ -51,7 +51,7 @@ private:
   void initialize();
   void cycle();
   nav_msgs::msg::Goals build_current_goal();
-  enum class PatrolState {IDLE, PATROLLING, FINISHED, ERROR, DO_AT_WAYPOINT};
+  enum class PatrolState {IDLE, PATROLLING, FINISHED, ERROR, DO_AT_WAYPOINT, RESETTING};
   PatrolState state_ {PatrolState::IDLE};
 
   bool initialized_ {false};

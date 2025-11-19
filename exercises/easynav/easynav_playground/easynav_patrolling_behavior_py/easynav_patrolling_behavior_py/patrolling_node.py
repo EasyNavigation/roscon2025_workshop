@@ -36,6 +36,7 @@ class PatrolState(Enum):
     DO_AT_WAYPOINT = 2
     FINISHED = 3
     ERROR = 4
+    RESETTING = 5
 
 def quat_from_yaw(yaw: float) -> Tuple[float, float, float, float]:
     cy = math.cos(yaw * 0.5)
@@ -122,12 +123,9 @@ class PatrollingNode(Node):
                 if nav_state == ClientState.SENT_GOAL:
                     self._send_retries += 1
                     if self._send_retries >= self._max_retries:
-                        self.get_logger().warn(f"No ACCEPT received after {self._max_retries} attempts, resending goal...")
+                        self.get_logger().warn(f"No ACCEPT received after {self._max_retries} attempts, resetting...")
                         self._send_retries = 0
-                        # Recreate client to reset to IDLE state
-                        self._gm = GoalManagerClient(node=self)
-                        self._last_nav_state = ClientState.IDLE
-                        self._state = PatrolState.IDLE
+                        self._state = PatrolState.RESETTING
                 elif (
                     nav_state == ClientState.NAVIGATION_REJECTED or
                     nav_state == ClientState.NAVIGATION_FAILED or
@@ -165,6 +163,14 @@ class PatrollingNode(Node):
                     else:
                         self.get_logger().info("All waypoints completed")
                         self._state = PatrolState.FINISHED                 
+
+            case PatrolState.RESETTING:
+                # For stuck goals that never got accepted, we need to create a new client
+                # since reset() won't work on non-terminal states
+                self.get_logger().info('Creating new goal manager client and retrying')
+                self._gm = GoalManagerClient(node=self)
+                self._last_nav_state = ClientState.IDLE
+                self._state = PatrolState.IDLE
 
             case PatrolState.FINISHED:
                 self.get_logger().info('Reset navigation')

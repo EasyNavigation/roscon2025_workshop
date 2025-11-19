@@ -109,13 +109,10 @@ PatrollingNode::cycle()
           case GoalManagerClient::State::SENT_GOAL:
             send_retries_++;
             if (send_retries_ >= max_retries_) {
-              RCLCPP_WARN(get_logger(), "No ACCEPT received after %zu attempts, resending goal...",
+              RCLCPP_WARN(get_logger(), "No ACCEPT received after %zu attempts, resetting...",
                 max_retries_);
               send_retries_ = 0;
-              // Recreate client to reset to IDLE state
-              gm_client_ = GoalManagerClient::make_shared(shared_from_this());
-              last_nav_state_ = GoalManagerClient::State::IDLE;
-              state_ = PatrolState::IDLE;
+              state_ = PatrolState::RESETTING;
             }
             break;
 
@@ -164,6 +161,17 @@ PatrollingNode::cycle()
         }
       }
       // END DONE: Workshop task
+      break;
+
+    case PatrolState::RESETTING:
+      {
+        // For stuck goals that never got accepted, we need to create a new client
+        // since reset() won't work on non-terminal states
+        RCLCPP_INFO(get_logger(), "Creating new goal manager client and retrying");
+        gm_client_ = GoalManagerClient::make_shared(shared_from_this());
+        last_nav_state_ = GoalManagerClient::State::IDLE;
+        state_ = PatrolState::IDLE;
+      }
       break;
 
     case PatrolState::FINISHED:
