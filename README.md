@@ -163,31 +163,6 @@ docker pull your-custom-image:tag
 3. Follow the same steps as above to run the container.
 4. Any custom scripts can be downloaded directly in the browser environment and executed in the terminal.
 
-# Exercises index — Nav2 & EasyNav
-
-This index lists the workshop exercises for the Nav2 (first part) and EasyNav (second part) tracks. Each entry includes a short summary and the README path inside the repo.
-
-## Nav2 exercises
-
-- nav2_playground — overview and entrypoint
-  - Path: `exercises/nav2/nav2_playground/README.md`
-
-- 1. Map generation (slam_toolbox)
-  - Path: `exercises/nav2/1.map_generation/README.md`
-  - Summary: Launch the Kobuki playground, run `slam_toolbox` to generate a map, use RViz to monitor mapping, and save the resulting `.pgm/.yaml` files.
-
-- 2. Basic navigation
-  - Path: `exercises/nav2/2.basic_navigation/README.md`
-  - Summary: Launch Nav2 with a generated map, use RViz to set initial pose and send goals (2D Pose Estimate, Nav2 Goal), and observe the robot executing navigation tasks.
-
-- 3. Parameters configuration
-  - Path: `exercises/nav2/3.params_configuration/README.md`
-  - Summary: Use `rqt` / `rqt_reconfigure` to change Nav2 parameters (e.g., inflation) interactively and observe costmap changes in RViz.
-
-- 4. Patrolling (Nav2)
-  - Path: `exercises/nav2/4.patrolling/README.md`
-  - Summary: Final Nav2 exercise; implement a patrolling state machine using the provided C++ or Python templates (examples and testing instructions included).
-
 
 # Exercises index — Nav2 & EasyNav
 
