@@ -87,10 +87,6 @@ PatrollingNode::cycle()
         nav_msgs::msg::Goals single_goal;
         single_goal.header = goals_.header;
         single_goal.goals.push_back(goals_.goals[current_goal_index_]);
-      // while (gm_client_->get_state() != GoalManagerClient::State::IDLE)
-      // {
-      //   gm_client_->reset(); // Ensure the client is idle before sending new goals
-      // }
         gm_client_->send_goals(single_goal);
         RCLCPP_INFO(get_logger(), "Goals sent");
         state_ = PatrolState::PATROLLING;
@@ -99,26 +95,28 @@ PatrollingNode::cycle()
 
     case PatrolState::PATROLLING:
       {
-
         auto nav_state = gm_client_->get_state();
+
+        // Show navigating message on state transition to ACCEPTED_AND_NAVIGATING
+        if (nav_state == GoalManagerClient::State::ACCEPTED_AND_NAVIGATING &&
+          last_nav_state_ != GoalManagerClient::State::ACCEPTED_AND_NAVIGATING)
+        {
+          RCLCPP_INFO(get_logger(), "Navigating to waypoint %zu", current_goal_index_ + 1);
+        }
+        last_nav_state_ = nav_state;
+
         switch (nav_state) {
           case GoalManagerClient::State::SENT_GOAL:
-            last_control_type_ = gm_client_->get_last_control().type;
-
-            if (last_control_type_ == easynav_interfaces::msg::NavigationControl::REQUEST) {
-              if (send_retries_ < max_retries_) {
-                send_retries_++;
-                RCLCPP_INFO(get_logger(), "Waiting for ACCEPT... attempt %zu/%zu", send_retries_,
+            send_retries_++;
+            if (send_retries_ >= max_retries_) {
+              RCLCPP_WARN(get_logger(), "No ACCEPT received after %zu attempts, resetting...",
                 max_retries_);
-              } else {
-                RCLCPP_WARN(get_logger(), "No ACCEPT received after %zu attempts, resending goal",
-                max_retries_);
-                send_retries_ = 0;
-                state_ = PatrolState::IDLE;
-              }
-            } else if (last_control_type_ == easynav_interfaces::msg::NavigationControl::ACCEPT) {
               send_retries_ = 0;
+              state_ = PatrolState::RESETTING;
             }
+            break;
+
+          case GoalManagerClient::State::ACCEPTED_AND_NAVIGATING:
             break;
 
           case GoalManagerClient::State::NAVIGATION_REJECTED:
@@ -139,8 +137,7 @@ PatrollingNode::cycle()
 
             state_ = PatrolState::DO_AT_WAYPOINT;
             break;
-          case GoalManagerClient::State::ACCEPTED_AND_NAVIGATING:
-            break;
+
           default:
             break;
         }
@@ -164,6 +161,17 @@ PatrollingNode::cycle()
         }
       }
       // END DONE: Workshop task
+      break;
+
+    case PatrolState::RESETTING:
+      {
+        // For stuck goals that never got accepted, we need to create a new client
+        // since reset() won't work on non-terminal states
+        RCLCPP_INFO(get_logger(), "Creating new goal manager client and retrying");
+        gm_client_ = GoalManagerClient::make_shared(shared_from_this());
+        last_nav_state_ = GoalManagerClient::State::IDLE;
+        state_ = PatrolState::IDLE;
+      }
       break;
 
     case PatrolState::FINISHED:
